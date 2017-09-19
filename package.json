@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/amarriner/ahlcg-chaos-ultimatum/issues"
   },
-  "homepage": "https://github.com/amarriner/ahlcg-chaos-ultimatum#readme"
+  "homepage": "https://github.com/amarriner/ahlcg-chaos-ultimatum#readme",
+  "dependencies": {
+    "sync-request": "^4.1.0"
+  }
 }
