@@ -1,30 +1,203 @@
 
+const gators = require("./json/gators.json");
 const cards = require("./json/cards.json");
 
-console.log(cards.length);
-
-var possible = [];
 var deck = [];
-var gator = {
-    name: "Daisy Walker",
-    deckSize: 30,
-    factions: [
-        {
-            "name": "Seeker",
-            "max": 30,
-            "level": 0
-        },
-        {
-            "name": "Mystic",
-            "max": 30,
-            "level": 0
-        },
-        {
-            "name": "Neutral",
-            "max": 30,
-            "level": 0
-        },
-    ]
+var gator = gators[0];
+
+//
+// TODO: An occult card will currently count towards the "Other Seeker/Survivor" limit,
+//       should it?
+//
+function checkCardForGator(deck, gator, card) {
+
+    //
+    // If the card has the spoiler property, it can't be added to a deck (not a
+    // player card)
+    //
+    if (card.spoiler === 1) {
+        return false;
+    }
+
+    //
+    // Has to be an asset, event or skill
+    //
+    if (["Asset", "Event", "Skill"].indexOf(card["type_name"]) === -1) {
+        return false;
+    }
+
+    //
+    // Card has to be zero level
+    //
+    if (card.xp > 0) {
+        return false;
+    }
+
+    //
+    // If the card has restrictions, check them 
+    // TODO: (currently only looks to see if there's an investigator restriction)
+    //
+    if (card.restrictions && card.restrictions.investigator) {
+        return false;
+    }
+
+    //
+    // Can't pick investigators
+    //
+    if (card["type_name"] === "Investigator") {
+        return false;
+    }
+
+    //
+    // If we are already at the deck limit for this card,
+    // return false (not allowed)
+    //
+    var numberInDeck = countCardInDeck(deck, card.name);
+    if (numberInDeck >= card["deck_limit"]) {
+        return false;
+    }
+
+    //
+    // Iterate over the gator's "deck_options" array to determine
+    // if the given card is allowed or not
+    //
+    for (i in gator["deck_options"]) {
+
+        var option = gator["deck_options"][i];
+
+        var typeCount = 0;
+
+        //
+        // If option.faction exists, this card MUST be in that faction
+        // for it to be considered an option for this gator
+        //
+        if (option.faction) {
+
+            //
+            // If we can't find this card's faction in this option's faction array,
+            // continue to the next option iteration
+            //
+            if (option.faction.indexOf(card["faction_name"].toLowerCase()) === -1) {
+                continue;
+            }
+
+            //
+            // Count the number of this faction in this deck already
+            //
+            typeCount = countFactionsInDeck(deck, option.faction);
+
+        }
+
+        //
+        // If option.trait exists, this card MUST have that trait 
+        // for it to be considered an option for this gator
+        //
+        if (option.trait) {
+
+            //
+            // If the card has no traits, continue to the next option iteration
+            //
+            if (!card.traits) {
+                continue;
+            }
+
+            //
+            // If we can't find one of this card's traits in this option's 
+            // trait array, continue to the next option iteration
+            //
+            var foundTrait = false;
+
+            //
+            // Loop through option.trait looking for each one in the card's
+            // "traits" property
+            //
+            for (j in option.trait) {
+
+                var trait = option.trait[j];
+                var regex = new RegExp(trait.toLowerCase());
+                if (regex.test(card.traits.toLowerCase())) {
+                    foundTrait = true;
+                }
+
+            }
+
+            //
+            // If we didn't find a matching trait, continue to the next
+            // option iteration
+            //
+            if (!foundTrait) {
+                continue;
+            }
+
+            //
+            // Count the number of this trait already in the deck
+            //
+            typeCount = countTraitsInDeck(deck, option.trait);
+
+        }
+
+        //
+        // Make sure the card's level is within the gator's range and
+        // if it isn't, continue to the next option iteration
+        //
+        if (card.xp < option.level.min || card.xp > option.level.max) {
+            continue;
+        }
+
+        //
+        // Figure out the limit for this type of card
+        //
+        var limit = 999;
+        if (option.limit) {
+            limit = option.limit;
+        }
+
+        //
+        // If there we are already at the limit for this type of card 
+        // (by faction or trait), continue to the next option iteration
+        //
+        if (typeCount >= limit) {
+            continue;
+        }
+
+        //
+        // If we've gotten this far the card has passed all of a given
+        // option's rules so it's a card that is allowed for this gator
+        //
+        return true;
+
+    }
+
+    return false;
+
+}
+
+function getCardById (cards, cardId) {
+
+    for (i in cards) {
+
+        if (cards[i].code === cardId) {
+            return cards[i];
+        }
+
+    }
+
+    return {};
+
+}
+
+function getCardByName (cards, cardName) {
+
+    for (i in cards) {
+
+        if (cards[i].name === cardName) {
+            return cards[i];
+        }
+
+    }
+
+    return {};
+
 }
 
 function countCardInDeck(deck, cardName) {
@@ -43,12 +216,12 @@ function countCardInDeck(deck, cardName) {
 
 }
 
-function countFactionInDeck(deck, faction) {
+function countFactionsInDeck(deck, factions) {
 
     var total = 0;
 
     for (i in deck) {
-        if (deck[i]["faction_name"] === faction) {
+        if (factions.indexOf(deck[i]["faction_code"]) >= 0) {
             total++;
         }
     }
@@ -57,71 +230,68 @@ function countFactionInDeck(deck, faction) {
 
 }
 
-//
-// Aggregate allowed factions into an array
-//
-var allowedFactions = gator.factions.map(function(f) { return f.name; });
+function countTraitsInDeck(deck, traits) {
 
-for (i in cards) {
+    var total = 0;
 
-    var c = cards[i];
+    for (i in deck) {
 
-    //
-    // Find the index of the current card's faction in this gator's allowed factions
-    //
-    var factionIndex = allowedFactions.indexOf(c["faction_name"]);
+        for (j in traits) {
 
-    //
-    // Determine whether this card's faction is allowed for this gator or not
-    //
-    var factionAllowed = factionIndex >= 0;
+            var regex = new RegExp(traits[j].toLowerCase());
+            if (regex.test(deck[i].traits.toLowerCase())) {
+                total++;
+            }
 
-    //
-    // Determine whether this card's level is allowed for this gator or not
-    //
-    var levelAllowed = factionIndex >= 0 && c["xp"] <= gator.factions[factionIndex].level;
-
-    if (factionAllowed && levelAllowed) {
-
-        possible.push(c);
-
+        }
     }
-    
+
+    return total;
 }
 
-while(deck.length < deckSize) {
+while(deck.length < gator["deck_requirements"].size) {
 
     //
     // Pull a random card from the possible card pool
     //
-    var c = possible[Math.floor(Math.random() * possible.length)];
+    var c = cards[Math.floor(Math.random() * cards.length)];
 
     //
-    // Find the index of the current card's faction in this gator's allowed factions
+    // Check to see if this card is allowed for this gator, and
+    // if it is, put it in the deck
     //
-    var factionIndex = allowedFactions.indexOf(c["faction_name"]);
-
-    //
-    // Check to make sure that adding this card wouldn't go over
-    // the faction limit
-    //
-    var allowedFaction = factionIndex >= 0 && countFactionInDeck(deck, c["faction_name"]) < gator.factions[factionIndex].max;
-
-    //
-    // Check to make sure there aren't two of these cards already in the deck
-    //
-    atCardLimit = countCardInDeck(deck, c.name) >= 2;
-
-    if (!allowedFaction || atCardLimit) {
-        continue;
+    if (checkCardForGator(deck, gator, c)) {
+        deck.push(c);
     }
 
-    deck.push(c);
-
 }
 
+console.log("<html>\n");
+console.log("<head>\n");
+console.log("<title>" + gator.name + " Deck</title>\n");
+console.log("</head>\n");
+console.log("<body>\n");
+
+var count = 0;
+console.log("<div>\n");
 for (i in deck) {
-    console.log(deck[i].name + " :: " + deck[i]["faction_name"]);
-}
 
-// {"pack_code":"eotp","pack_name":"Echoes of the Past","type_code":"asset","type_name":"Asset","faction_code":"survivor","faction_name":"Survivor","position":115,"exceptional":false,"code":"03115","name":"Plucky","cost":1,"text":"Fast. Limit 1 <b>Composure</b> in play.\nNon-direct horror must be assigned to Plucky before it can be assigned to your investigator card.\n[free] Spend 1 resource: You get +1 [willpower] for this skill test.\n[free] Spend 1 resource: You get +1 [intellect] for this test.","quantity":2,"skill_willpower":1,"skill_intellect":1,"xp":1,"clues_fixed":false,"health_per_investigator":false,"sanity":1,"deck_limit":2,"traits":"Talent. Composure.","illustrator":"Dani Hartel","is_unique":false,"exile":false,"hidden":false,"permanent":false,"double_sided":false,"url":"https://arkhamdb.com/card/03115","imagesrc":"/bundles/cards/03115.png"},{"pack_code":"eotp","pack_name":"Echoes of the Past","type_code":"skill","type_name":"Skill","faction_code":"neutral","faction_name":"Neutral","position":119,"exceptional":false,"code":"03119","name":"Run For Your Life","text":"Max 1 committed per skill test.\nCommit to a skill test only if you have 3 or fewer remaining sanity.","quantity":2,"skill_agility":4,"xp":0,"clues_fixed":false,"health_per_investigator":false,"deck_limit":2,"traits":"Desperate.","illustrator":"Nicholas Elias","is_unique":false,"exile":false,"hidden":false,"permanent":false,"double_sided":false,"url":"https://arkhamdb.com/card/03119","imagesrc":"/bundles/cards/03119.png"}
+    if (count % 5 === 0) {
+        console.log("</div>\n<div>\n");
+    }
+
+    console.log("<a href=\"" + deck[i].url + "\">");
+    if (deck[i].imagesrc) {
+        console.log("<img src=\"https://arkhamdb.com" + deck[i].imagesrc + "\">");
+    }
+    else {
+        console.log(deck[i].name);
+    }
+    console.log("</a>\n");
+    count++;
+
+}
+console.log("</div>\n");
+
+console.log("</body>\n");
+console.log("</html>\n");
