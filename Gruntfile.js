@@ -53,6 +53,16 @@ module.exports = function(grunt) {
                 }]
             },
 
+            json: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/json',
+                    src: ['cards.json', 'gators.json'],
+                    flatten: true,
+                    dest: 'dist/json/'
+                }]        
+            },
+
             images: {
                 files: [{
                     expand: true,
@@ -114,7 +124,6 @@ module.exports = function(grunt) {
         jshint: {
             all: {
                     options: {
-                        esversion: 6,
                         ignores: []
                     },
                     files: {
@@ -175,6 +184,12 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'dist/js/app.js': [
+                        'src/libs/angular/angular.js',
+                        'src/libs/angular-route/angular-route.js',
+                        'src/libs/angular-sanitize/angular-sanitize.js',
+                        'src/libs/angular-bootstrap/ui-bootstrap-tpls.js',
+                        'src/js/templates.js',
+                        'src/js/app.js',
                         'src/js/**/*.js'
                      ]
                 }
@@ -229,7 +244,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-preprocess');
 
     grunt.registerTask('lint', ['htmlangular', 'jsonlint', 'jshint' ]);
-    grunt.registerTask('minify', ['uglify:concat', 'replace', 'uglify:minify', 'concat:css', 'copy:css', 'cssmin']);
-    grunt.registerTask('build', ['clean:dist', 'lint', 'html2js', 'minify', 'preprocess:src', 'preprocess:dist', 'copy:fontAwesome', 'copy:fonts', 'copy:images', 'copy:templates']);
+    grunt.registerTask('minify', ['uglify:concat', 'uglify:minify', 'concat:css', 'copy:css', 'cssmin']);
+    grunt.registerTask('build', ['clean:dist', 'lint', 'html2js', 'minify', 'preprocess:src', 'preprocess:dist', 'copy:fontAwesome', 'copy:fonts', 'copy:images', 'copy:json', 'copy:templates']);
 
 };

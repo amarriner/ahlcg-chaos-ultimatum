@@ -202,7 +202,7 @@
 
             function countCardInDeck(deck, cardName) {
 
-                return deck.map(function (card) { 
+                var countDeck = deck.map(function (card) { 
         
                     if (card.name === cardName) {
                         return 1;
@@ -212,7 +212,14 @@
                         return 0;
                     }
 
-                }).reduce((a, b) => a + b, 0);
+                });
+                
+                var total = 0;
+                for (var i in countDeck) {
+                    total += countDeck[i];
+                }
+
+                return total;
 
             }
 
@@ -249,11 +256,11 @@
                 return total;
             }
 
-            const getRandomGator = function(gators) {
+            var getRandomGator = function(gators) {
                 return gators[Math.floor(Math.random() * gators.length)];
             };
 
-            const getGatorById = function(gatorId, gators) {
+            var getGatorById = function(gatorId, gators) {
 
                 for (var i in gators) {
                     if (gators[i].code === gatorId) {
@@ -265,7 +272,7 @@
 
             };
 
-            const makeDeck = function (gator, cards) {
+            var makeDeck = function (gator, cards) {
 
                 var deck = [];
 
