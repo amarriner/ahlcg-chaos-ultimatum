@@ -1,0 +1,32 @@
+@import "src/libs/bootstrap/less/bootstrap.less";
+
+@dark-blue          : @brand-primary;
+@darkest-blue       : @dark-blue * .25;
+@light-blue         : @dark-blue * 1.25;
+
+@navbar-default-bg                  : @dark-blue;
+@navbar-default-link-color          : white;
+@navbar-default-link-hover-color    : @darkest-blue;
+
+.navbar {
+    border-radius: 0;
+}
+
+.header {
+    background-color: @brand-primary;
+    color: white;
+    font-weight: 600;
+}
+
+.rowHighlight {
+    background-color: #eee;
+}
+
+.hoverHighlight {
+    background-color: @light-blue;
+    color: @darkest-blue;
+}
+
+.hoverHighlight a {
+    color: white;
+}

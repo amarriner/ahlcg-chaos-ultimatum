@@ -1,0 +1,27 @@
+{
+  "name": "ahlcg-chaos-ultimatum",
+  "description": "Randomly Builds a Arkham Horror LCG Deck for the Chaos Ultimatum",
+  "main": "index.js",
+  "authors": [
+    "Aaron Marriner <amarriner@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/amarriner/ahlcg-chaos-ultimatum",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.6.6",
+    "angular-route": "~1.6.6",
+    "angular-bootstrap": "~2.5.0",
+    "font-awesome": "~4.7.0",
+    "html5-boilerplate": "~6.0.1",
+    "bootstrap": "~3.3.7"
+  }
+}
