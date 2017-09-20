@@ -3,6 +3,7 @@
 
     var module = angular.module('ahlcgChaosUltimatum', [
         'ngRoute',
+        'ngSanitize',
         'ahlcgChaosUltimatum.deckFactory',
         'ahlcgChaosUltimatum.resourceFactory',
         'ahlcgChaosUltimatum.index',

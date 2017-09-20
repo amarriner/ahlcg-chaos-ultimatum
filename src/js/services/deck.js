@@ -249,6 +249,10 @@
                 return total;
             }
 
+            const getRandomGator = function(gators) {
+                return gators[Math.floor(Math.random() * gators.length)];
+            };
+
             const getGatorById = function(gatorId, gators) {
 
                 for (var i in gators) {
@@ -326,6 +330,7 @@
             return {
 
                 getGatorById: getGatorById,
+                getRandomGator: getRandomGator,
                 makeDeck: makeDeck
 
             };

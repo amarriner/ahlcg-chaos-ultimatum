@@ -15,6 +15,7 @@
 
         function($scope, Resource, Deck) {
 
+            $scope.selectedGator = null;
             $scope.cards = null;
             $scope.gators = null;
 
@@ -48,8 +49,17 @@
 
             $scope.makeDeck = function() {
                 if ($scope.selectedGator) {
-                    $scope.deck = Deck.makeDeck(Deck.getGatorById($scope.selectedGator, $scope.gators), $scope.cards);
+                    $scope.gator = Deck.getGatorById($scope.selectedGator, $scope.gators);
+                    $scope.deck = Deck.makeDeck($scope.gator, $scope.cards);
                 }
+            };
+
+            $scope.randomGator = function() {
+
+                var randomGator = Deck.getRandomGator($scope.gators);
+                $scope.selectedGator = randomGator.code;
+                $scope.makeDeck();
+
             };
 
         }

@@ -6721,8 +6721,14 @@ button.close {
     display: none !important;
   }
 }
+#content {
+  padding-bottom: 100px;
+}
 .navbar {
   border-radius: 0;
+}
+.navbar-icon {
+  font-size: 20px;
 }
 .header {
   background-color: #337ab7;
@@ -6738,4 +6744,8 @@ button.close {
 }
 .hoverHighlight a {
   color: white;
+}
+.panel-heading a {
+  color: white;
+  font-weight: 600;
 }

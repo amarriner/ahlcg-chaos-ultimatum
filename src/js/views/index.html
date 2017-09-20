@@ -9,7 +9,7 @@
             This tool allows users to randomly generate decks legal for the 
             <a href="https://www.fantasyflightgames.com/en/news/2017/9/18/invoke-thy-name/">Ultimatum of Chaos</a> 
             method of playing the <a href="https://www.fantasyflightgames.com/en/products/arkham-horror-the-card-game/">Arhkam Horror Living Card Game</a>. 
-            Select an investigator from the drop-down below and then click the "Make Deck" button. Card data from <a href="https://arkhamdb.com">https://arkhamdb.com</a>.
+            Select an investigator from the drop-down below and then click the "Make Deck" button. Card data and images from <a href="https://arkhamdb.com">https://arkhamdb.com</a>.
         </div>
     </div>
 
@@ -22,8 +22,52 @@
 
         <div class="col-sm-4">
             <button class="btn btn-primary" ng-click="makeDeck()"><i class="fa fa-cog"></i> Make Deck</button>
+
+            <button class="btn btn-primary" ng-click="randomGator()"><i class="fa fa-random"></i> Random Investigator</button>
         </div>
 
+    </div>
+
+    <div class="row" ng-show="gator">
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><a ng-href="{{gator.url}}"><i class="fa fa-external-link"></i> {{gator.name}}</a></div>
+                <div class="panel-body text-center">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-1"></div>
+                                <div class="header col-sm-1">W</div>
+                                <div class="header col-sm-1">I</div>
+                                <div class="header col-sm-1">C</div>
+                                <div class="header col-sm-1">A</div>
+                                <div class="header col-sm-1">H</div>
+                                <div class="header col-sm-1">S</div>
+                                
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-1">{{gator.skill_willpower}}</div>
+                                <div class="col-sm-1">{{gator.skill_intellect}}</div>
+                                <div class="col-sm-1">{{gator.skill_combat}}</div>
+                                <div class="col-sm-1">{{gator.skill_agility}}</div>
+                                <div class="col-sm-1">{{gator.health}}</div>
+                                <div class="col-sm-1">{{gator.sanity}}</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <p ng-bind-html="gator.text"></p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-footer" ng-bind-html="gator.back_text">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div ng-show="deck">
