@@ -1,6 +1,6 @@
 {
   "name": "ahlcg-chaos-ultimatum",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Randomly Builds a Arkham Horror LCG Deck for the Chaos Ultimatum",
   "main": "index.js",
   "scripts": {
