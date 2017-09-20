@@ -4,15 +4,17 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
   $templateCache.put("js/views/index.html",
     "<div ng-show=\"!gators\" class=\"text-muted\"><i class=\"fa fa-cog fa-spin\"></i> Loading investigators...</div>\n" +
     "<div ng-show=\"!cards\" class=\"text-muted\"><i class=\"fa fa-cog fa-spin\"></i> Loading Cards...</div>\n" +
+    "<div ng-show=\"!packs\" class=\"text-muted\"><i class=\"fa fa-cog fa-spin\"></i> Loading Packs...</div>\n" +
     "\n" +
-    "<div ng-show=\"cards && gators\">\n" +
+    "<div ng-show=\"cards && gators && packs\">\n" +
     "\n" +
-    "    <div class=\"panel panel-default\">\n" +
-    "        <div class=\"panel-body\">\n" +
+    "    <div>\n" +
+    "        <div id=\"blurb\" class=\"well\">\n" +
     "            This tool allows users to randomly generate legal decks for the \n" +
     "            <a href=\"https://www.fantasyflightgames.com/en/news/2017/9/18/invoke-thy-name/\">Ultimatum of Chaos</a> \n" +
     "            method of playing the <a href=\"https://www.fantasyflightgames.com/en/products/arkham-horror-the-card-game/\">Arhkam Horror Living Card Game</a>. \n" +
-    "            Select an investigator from the drop-down below and then click the \"Make Deck\" button. Card data and images from <a href=\"https://arkhamdb.com\">https://arkhamdb.com</a>.\n" +
+    "            Select an investigator from the drop-down below and then click the \"Make Deck\" button, or just click the \"Random Investigator\" button. \n" +
+    "            Card data and images from <a href=\"https://arkhamdb.com\">https://arkhamdb.com</a>.\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -23,12 +25,37 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            </select>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"col-sm-4\">\n" +
+    "        <div class=\"col-sm-4 form-inline\">\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"makeDeck()\"><i class=\"fa fa-cog\"></i> Make Deck</button>\n" +
-    "\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"randomGator()\"><i class=\"fa fa-random\"></i> Random Investigator</button>\n" +
+    "            <button class=\"btn btn-primary\" ng-click=\"toggleShowPacks()\">\n" +
+    "                <i class=\"fa fa-check-square-o\"></i>\n" +
+    "                <span ng-show=\"!showPacks\">Show</span><span ng-show=\"showPacks\">Hide</span> \n" +
+    "                Packs\n" +
+    "            </button>\n" +
+    "            <div class=\"checkbox\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\" ng-model=\"includeUnreleased\"> Include Unreleased\n" +
+    "                </label>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"showPacks\">\n" +
+    "        <div class=\"col-sm-5\"></div>\n" +
+    "        <div class=\"col-sm-3 well\">\n" +
+    "            <div class=\"form-inline\">\n" +
+    "                <button class=\"btn btn-sm btn-primary\" ng-click=\"uncheckAllPacks()\">Uncheck All</button>\n" +
+    "                <button class=\"btn btn-sm btn-primary\" ng-click=\"checkAllPacks()\">Check All</button>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"checkbox\" ng-repeat=\"p in packs\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\" ng-model=\"p.checked\"> {{p.name}}\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"gator\">\n" +

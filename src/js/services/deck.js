@@ -9,7 +9,28 @@
             // TODO: An occult card will currently count towards the "Other Seeker/Survivor" limit,
             //       should it?
             //
-            function checkCardForGator(deck, gator, card) {
+            function checkCardForGator(deck, gator, card, pack, includeUnreleased) {
+
+                //
+                // If the pack has been unchecked, don't allow cards from it
+                //
+                if (!pack.checked) {
+                    return false;
+                }
+
+                //
+                // If we aren't including unreleased cards, make sure this card has been 
+                // released already
+                //
+                if (!includeUnreleased) {
+                    var packDate = new Date(pack.available);
+                    var today = new Date();
+                    
+                    if (packDate > today) {
+                        return false;
+                    }
+
+                }
 
                 //
                 // If the card has the spoiler property, it can't be added to a deck (not a
@@ -140,7 +161,7 @@
                     // Make sure the card's level is within the gator's range and
                     // if it isn't, continue to the next option iteration
                     //
-                    if (card.xp < option.level.min || card.xp > option.level.max) {
+                    if (option.level && (card.xp < option.level.min || card.xp > option.level.max)) {
                         continue;
                     }
 
@@ -192,6 +213,20 @@
 
                     if (cards[i].name === cardName) {
                         return cards[i];
+                    }
+
+                }
+
+                return {};
+
+            }
+
+            function getPackById (packs, packId) {
+
+                for (var i in packs) {
+
+                    if (packs[i].code === packId) {
+                        return packs[i];
                     }
 
                 }
@@ -272,11 +307,12 @@
 
             };
 
-            var makeDeck = function (gator, cards) {
+            var makeDeck = function (gator, cards, packs, includeUnreleased) {
 
                 var deck = [];
 
-                while(deck.length < gator.deck_requirements.size) {
+                var count = 0;
+                while(deck.length < gator.deck_requirements.size && count < 3000) {
 
                     //
                     // Pull a random card from the possible card pool
@@ -287,7 +323,7 @@
                     // Check to see if this card is allowed for this gator, and
                     // if it is, put it in the deck
                     //
-                    if (checkCardForGator(deck, gator, c)) {
+                    if (checkCardForGator(deck, gator, c, getPackById(packs, c.pack_code), includeUnreleased)) {
                         deck.push(c);
                     }
                     
@@ -304,9 +340,11 @@
                             return 0;
                         }
                     );
+
+                    count++;
                 }
 
-                var count = 0;
+                count = 0;
                 var lastCard = {};
                 var returnDeck = [];
                 for (var i in deck) {

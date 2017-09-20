@@ -30,6 +30,21 @@
                             return $q.reject(error);
                         });
 
+                },
+
+                getPacks: function() {
+
+                    return $http.get('json/packs.json').then(
+                        function(success) {
+                           
+
+                            return success;
+                        },
+                        function(error) {
+                            return $q.reject(error);
+                        }
+                    );
+
                 }
 
             };

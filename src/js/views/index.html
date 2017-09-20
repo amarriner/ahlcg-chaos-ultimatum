@@ -1,8 +1,9 @@
 
 <div ng-show="!gators" class="text-muted"><i class="fa fa-cog fa-spin"></i> Loading investigators...</div>
 <div ng-show="!cards" class="text-muted"><i class="fa fa-cog fa-spin"></i> Loading Cards...</div>
+<div ng-show="!packs" class="text-muted"><i class="fa fa-cog fa-spin"></i> Loading Packs...</div>
 
-<div ng-show="cards && gators">
+<div ng-show="cards && gators && packs">
 
     <div>
         <div id="blurb" class="well">
@@ -21,12 +22,37 @@
             </select>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-sm-4 form-inline">
             <button class="btn btn-primary" ng-click="makeDeck()"><i class="fa fa-cog"></i> Make Deck</button>
-
             <button class="btn btn-primary" ng-click="randomGator()"><i class="fa fa-random"></i> Random Investigator</button>
+            <button class="btn btn-primary" ng-click="toggleShowPacks()">
+                <i class="fa fa-check-square-o"></i>
+                <span ng-show="!showPacks">Show</span><span ng-show="showPacks">Hide</span> 
+                Packs
+            </button>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="includeUnreleased"> Include Unreleased
+                </label>
+            </div>
         </div>
 
+    </div>
+
+    <div class="row" ng-show="showPacks">
+        <div class="col-sm-5"></div>
+        <div class="col-sm-3 well">
+            <div class="form-inline">
+                <button class="btn btn-sm btn-primary" ng-click="uncheckAllPacks()">Uncheck All</button>
+                <button class="btn btn-sm btn-primary" ng-click="checkAllPacks()">Check All</button>
+            </div>
+
+            <div class="checkbox" ng-repeat="p in packs">
+                <label>
+                    <input type="checkbox" ng-model="p.checked"> {{p.name}}
+                </label>
+            </div>
+        </div>
     </div>
 
     <div class="row" ng-show="gator">

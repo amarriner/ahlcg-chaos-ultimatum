@@ -57,7 +57,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/json',
-                    src: ['cards.json', 'gators.json'],
+                    src: ['cards.json', 'gators.json', 'packs.json'],
                     flatten: true,
                     dest: 'dist/json/'
                 }]        
@@ -141,6 +141,7 @@ module.exports = function(grunt) {
             all: [
                 "json/cards.json",
                 "json/gators.json",
+                "json/packs.json",
                 "package.json",
                 "bower.json",
                 ".bowerrc"
