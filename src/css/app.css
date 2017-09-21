@@ -6724,7 +6724,6 @@ button.close {
 #blurb {
   margin: 0 auto;
   margin-bottom: 20px;
-  width: 75%;
 }
 #subheader {
   font-size: 10px;
@@ -6736,6 +6735,12 @@ button.close {
 #content {
   padding-top: 10px;
   padding-bottom: 100px;
+}
+#gator {
+  margin-top: 10px;
+}
+#include-unreleased {
+  display: inline;
 }
 .navbar {
   border-radius: 0;
