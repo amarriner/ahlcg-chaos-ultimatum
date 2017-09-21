@@ -11,7 +11,8 @@ module.exports = function(grunt) {
         concat: {
             css: {
                 src: [
-                    'src/libs/font-awesome/css/font-awesome.css'
+                    'src/libs/font-awesome/css/font-awesome.css',
+                    'src/css/icons.css'
                 ],
                 dest: 'src/css/libs.css'
             }

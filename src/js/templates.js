@@ -74,10 +74,10 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                        <div class=\"col-xs-12 col-sm-12 col-md-6\">\n" +
     "                            <div class=\"row\">\n" +
     "                                <div class=\"col-xs-3\"></div>\n" +
-    "                                <div class=\"header col-xs-1\">W</div>\n" +
-    "                                <div class=\"header col-xs-1\">I</div>\n" +
-    "                                <div class=\"header col-xs-1\">C</div>\n" +
-    "                                <div class=\"header col-xs-1\">A</div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-willpower\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-intellect\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-combat\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-agility\"></span></div>\n" +
     "                                <div class=\"header col-xs-1\">H</div>\n" +
     "                                <div class=\"header col-xs-1\">S</div>\n" +
     "                                \n" +
@@ -94,17 +94,17 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                            </div>\n" +
     "                        </div>\n" +
     "\n" +
-    "                        <div class=\"col-md-6 hidden-xs hidden-sm\">\n" +
-    "                            <p ng-bind-html=\"gator.text.replace('<b>', '<br/><b>')\"></p>\n" +
+    "                        <div class=\"col-md-6 hidden-xs hidden-sm text-left\">\n" +
+    "                            <p ng-bind-html=\"getGatorText(gator.text)\"></p>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "\n" +
     "                    <div class=\"hidden-md hidden-lg\">\n" +
-    "                        <p ng-bind-html=\"gator.text\"></p>\n" +
+    "                        <p ng-bind-html=\"getGatorText(gator.text)\"></p>\n" +
     "                    </div>\n" +
     "\n" +
     "                </div>\n" +
-    "                <div class=\"panel-footer\" ng-bind-html=\"gator.back_text\">\n" +
+    "                <div class=\"panel-footer\" ng-bind-html=\"getGatorText(gator.back_text)\">\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +

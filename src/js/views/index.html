@@ -71,10 +71,10 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <div class="row">
                                 <div class="col-xs-3"></div>
-                                <div class="header col-xs-1">W</div>
-                                <div class="header col-xs-1">I</div>
-                                <div class="header col-xs-1">C</div>
-                                <div class="header col-xs-1">A</div>
+                                <div class="header col-xs-1"><span class="icon-willpower"></span></div>
+                                <div class="header col-xs-1"><span class="icon-intellect"></span></div>
+                                <div class="header col-xs-1"><span class="icon-combat"></span></div>
+                                <div class="header col-xs-1"><span class="icon-agility"></span></div>
                                 <div class="header col-xs-1">H</div>
                                 <div class="header col-xs-1">S</div>
                                 
@@ -91,17 +91,17 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 hidden-xs hidden-sm">
-                            <p ng-bind-html="gator.text.replace('<b>', '<br/><b>')"></p>
+                        <div class="col-md-6 hidden-xs hidden-sm text-left">
+                            <p ng-bind-html="getGatorText(gator.text)"></p>
                         </div>
                     </div>
 
                     <div class="hidden-md hidden-lg">
-                        <p ng-bind-html="gator.text"></p>
+                        <p ng-bind-html="getGatorText(gator.text)"></p>
                     </div>
 
                 </div>
-                <div class="panel-footer" ng-bind-html="gator.back_text">
+                <div class="panel-footer" ng-bind-html="getGatorText(gator.back_text)">
                 </div>
             </div>
         </div>

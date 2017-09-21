@@ -311,6 +311,31 @@
                 }
             };
 
+            $scope.getGatorText = function(text) {
+
+                if (!text) { return; }
+
+                text = text.replace(/\[action\]/g, "<span class=\"icon-action\"></span>");
+                text = text.replace(/\[elder_sign\]/g, "<span class=\"icon-eldersign\"></span>");
+                text = text.replace(/\[elder_thing\]/g, "<span class=\"icon-elderthing\"></span>");
+                text = text.replace(/\[free\]/g, "<span class=\"icon-free\"></span>");
+                text = text.replace(/\[lightning\]/g, "<span class=\"icon-lightning\"></span>");
+                text = text.replace(/\[reaction\]/g, "<span class=\"icon-reaction\"></span>");
+                text = text.replace(/\[skull\]/g, "<span class=\"icon-skull\"></span>");
+                text = text.replace(/\[wild\]/g, "<span class=\"icon-wild\"></span>");
+
+                text = text.replace(/\[guardian\]/g, "<img src=\"images/guardian.png\" alt=\"Guardian\">");
+                text = text.replace(/\[mystic\]/g, "<img src=\"images/mystic.png\" alt=\"Mystic\">");
+                text = text.replace(/\[rogue\]/g, "<img src=\"images/rogue.png\" alt=\"Rogue\">");
+                text = text.replace(/\[seeker\]/g, "<img src=\"images/seeker.png\" alt=\"Seeker\">");
+                text = text.replace(/\[survivor\]/g, "<img src=\"images/survivor.png\" alt=\"Survivor\">");
+
+                text = text.split("\n").map(function(i) { return "<p>" + i + "</p>"; }).join(" ");
+
+                return text;
+
+            };
+
         }
 
     ]);
