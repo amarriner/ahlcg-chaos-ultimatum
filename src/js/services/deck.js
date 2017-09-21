@@ -5,6 +5,14 @@
 
         function ($http, $q) {
 
+            var factions = [
+                "guardian",
+                "seeker",
+                "rogue",
+                "mystic",
+                "survivor"
+            ];
+
             //
             // TODO: An occult card will currently count towards the "Other Seeker/Survivor" limit,
             //       should it?
@@ -87,6 +95,19 @@
                     var option = gator.deck_options[i];
 
                     var typeCount = 0;
+
+                    if (!option.faction && !option.trait) {
+                        if (card.faction_code != gator.faction_code &&
+                            card.faction_code != "Neutral") {
+
+                            for (var f in factions) {
+                                if (factions[f] != gator.faction_code) {
+                                    typeCount += countFactionsInDeck(deck, [factions[f]]);
+                                }
+                            }
+
+                        }
+                    }
 
                     //
                     // If option.faction exists, this card MUST be in that faction

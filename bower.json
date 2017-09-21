@@ -1,6 +1,6 @@
 {
   "name": "ahlcg-chaos-ultimatum",
-  "description": "Randomly Builds a Arkham Horror LCG Deck for the Chaos Ultimatum",
+  "description": "Randomly Builds an Arkham Horror LCG Deck for the Chaos Ultimatum",
   "main": "index.js",
   "authors": [
     "Aaron Marriner <amarriner@gmail.com>"

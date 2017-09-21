@@ -107,7 +107,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            <div class=\"col-sm-1\">Count</div>\n" +
     "            <div class=\"col-sm-1\">Type</div>\n" +
     "            <div class=\"col-sm-1\">Faction</div>\n" +
-    "            <div class=\"col-sm-2\">Traits</div>\n" +
+    "            <div class=\"col-sm-3\">Traits</div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck\">\n" +
@@ -115,7 +115,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            <div class=\"col-sm-1\">{{card.count}}</div>\n" +
     "            <div class=\"col-sm-1\">{{card.card.type_name}}</div>\n" +
     "            <div class=\"col-sm-1\">{{card.card.faction_name}}</div>\n" +
-    "            <div class=\"col-sm-2\">{{card.card.traits}}</div>\n" +
+    "            <div class=\"col-sm-3\">{{card.card.traits}}</div>\n" +
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
