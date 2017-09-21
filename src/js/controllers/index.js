@@ -82,7 +82,7 @@
 
             $scope.makeDeck = function() {
                 if ($scope.selectedGator) {
-                    $scope.gator = Deck.getGatorById($scope.selectedGator, $scope.gators);
+                    $scope.setGator();
                     $scope.deck = Deck.makeDeck($scope.gator, $scope.cards, $scope.packs, $scope.includeUnreleased);
                     $scope.showPacks = false;
                 }
@@ -94,6 +94,10 @@
                 $scope.selectedGator = randomGator.code;
                 $scope.makeDeck();
 
+            };
+
+            $scope.setGator = function() {
+                $scope.gator = Deck.getGatorById($scope.selectedGator, $scope.gators);
             };
 
             $scope.toggleShowPacks = function() {

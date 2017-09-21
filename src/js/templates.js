@@ -20,7 +20,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "\n" +
     "    <div class=\"form-group row\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <select class=\"form-control\" ng-model=\"selectedGator\">\n" +
+    "            <select class=\"form-control\" ng-model=\"selectedGator\" ng-change=\"setGator()\">\n" +
     "                <option ng-repeat=\"g in gators | orderBy: 'name'\" value=\"{{g.code}}\">{{g.name}}</option>\n" +
     "            </select>\n" +
     "        </div>\n" +

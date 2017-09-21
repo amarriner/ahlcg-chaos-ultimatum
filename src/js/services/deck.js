@@ -124,6 +124,15 @@
                         }
 
                         //
+                        // If we found this card's faction in the option's faction array,
+                        // but the option's "not" property is true, continue to the
+                        // next option iteration
+                        //
+                        if (option.not) {
+                            continue;
+                        }
+
+                        //
                         // Count the number of this faction in this deck already
                         //
                         typeCount = countFactionsInDeck(deck, option.faction);
@@ -168,6 +177,14 @@
                         // option iteration
                         //
                         if (!foundTrait) {
+                            continue;
+                        }
+
+                        //
+                        // If we found the trait, but this option's "not" value is true
+                        // continue to the next option iteration
+                        //
+                        if (option.not) {
                             continue;
                         }
 

@@ -17,7 +17,7 @@
 
     <div class="form-group row">
         <div class="col-sm-3">
-            <select class="form-control" ng-model="selectedGator">
+            <select class="form-control" ng-model="selectedGator" ng-change="setGator()">
                 <option ng-repeat="g in gators | orderBy: 'name'" value="{{g.code}}">{{g.name}}</option>
             </select>
         </div>
