@@ -2,11 +2,14 @@
     'use strict';
 
     var module = angular.module('ahlcgChaosUltimatum', [
+        'angularModalService',
+        'download',
         'ngRoute',
         'ngSanitize',
         'ahlcgChaosUltimatum.deckFactory',
         'ahlcgChaosUltimatum.resourceFactory',
         'ahlcgChaosUltimatum.index',
+        'ahlcgChaosUltimatum.modal',
         'ui.bootstrap',
     ])
     .config(['$routeProvider',

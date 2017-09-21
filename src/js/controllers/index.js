@@ -11,9 +11,9 @@
         });
 
     }])
-    .controller('IndexCtrl', ['$scope', 'Resource', 'Deck', 
+    .controller('IndexCtrl', ['$scope', 'Resource', 'Deck', 'download', 'ModalService',
 
-        function($scope, Resource, Deck) {
+        function($scope, Resource, Deck, download, ModalService) {
 
             $scope.includeUnreleased = false;
             $scope.selectedGator = null;
@@ -29,8 +29,23 @@
                 },
                 function(error) {
 
-                    // TODO: Make this nicer...
-                    alert("ERROR LOADING GATORS!");
+                        ModalService.showModal({
+                            templateUrl: "js/views/modal.html",
+                            controller: "ModalCtrl",
+                            inputs: {
+                                title: "ERROR",
+                                msg: "ERROR LOADING GATORS"
+                            }
+                        }).then(
+                            function(modal) {
+                                modal.element.modal();
+                                modal.close.then(
+                                    function(result) {
+                                
+                                    }
+                                );
+                            }
+                        );
 
                 }
             );
@@ -43,8 +58,24 @@
                 },
                 function(error) {
 
-                    // TODO: Make this nicer...
-                    alert("ERROR LOADING CARDS!");
+                        ModalService.showModal({
+                            templateUrl: "js/views/modal.html",
+                            controller: "ModalCtrl",
+                            inputs: {
+                                title: "ERROR",
+                                msg: "ERROR LOADING CARDS"
+                            }
+                        }).then(
+                            function(modal) {
+                                modal.element.modal();
+                                modal.close.then(
+                                    function(result) {
+                                
+                                    }
+                                );
+                            }
+                        );
+
 
                 }
             );
@@ -74,8 +105,24 @@
                 },
                 function(error) {
 
-                    // TODO: Make this nicer...
-                    alert("ERROR LOADING PACKS!");
+                        ModalService.showModal({
+                            templateUrl: "js/views/modal.html",
+                            controller: "ModalCtrl",
+                            inputs: {
+                                title: "ERROR",
+                                msg: "ERROR LOADING PACKS"
+                            }
+                        }).then(
+                            function(modal) {
+                                modal.element.modal();
+                                modal.close.then(
+                                    function(result) {
+                                
+                                    }
+                                );
+                            }
+                        );
+
 
                 }
             );
@@ -90,14 +137,46 @@
 
             $scope.randomGator = function() {
 
-                var randomGator = Deck.getRandomGator($scope.gators);
-                $scope.selectedGator = randomGator.code;
-                $scope.makeDeck();
+                //
+                // Make sure there's a gator to pick
+                //
+                var n = 0;
+                for (var i in $scope.gators) {
+                    if ($scope.validGator($scope.gators[i].code)) {
+                        n++;
+                    }
+                }
+
+                if (n > 0) {
+                    
+                    var found = false;
+                    var randomGator;
+                    
+                    while (!found) {
+                        randomGator = Deck.getRandomGator($scope.gators);
+                        found = $scope.validGator(randomGator.code);
+                    } 
+
+                    $scope.selectedGator = randomGator.code;
+                    $scope.makeDeck();
+
+                }
 
             };
 
             $scope.setGator = function() {
                 $scope.gator = Deck.getGatorById($scope.selectedGator, $scope.gators);
+            };
+
+            $scope.validGator = function(gatorId) {
+                var g = Deck.getGatorById(gatorId, $scope.gators);
+                for (var i in $scope.packs) {
+                    if (g.pack_code === $scope.packs[i].code && !$scope.packs[i].checked) {
+                        return false;
+                    }
+                }
+
+                return true;
             };
 
             $scope.toggleShowPacks = function() {
@@ -113,6 +192,122 @@
             $scope.uncheckAllPacks = function() {
                 for (var i in $scope.packs) {
                     $scope.packs[i].checked = false;
+                }
+            };
+
+            $scope.downloadOctgn = function() {
+                if ($scope.gator) {
+
+                    if (!$scope.gator.octgn_id) {
+
+                        ModalService.showModal({
+                            templateUrl: "js/views/modal.html",
+                            controller: "ModalCtrl",
+                            inputs: {
+                                title: "Missing OCTGN ID",
+                                msg: "This investigator doesn't have an OCTGN ID in the database yet so a deck cannot be exported"
+                            }
+                        }).then(
+                            function(modal) {
+                                modal.element.modal();
+                                modal.close.then(
+                                    function(result) {
+                                
+                                    }
+                                );
+                            }
+                        );
+                        
+                        return;
+
+                    }
+
+                    var deck = $scope.deck;
+                    var foundUndefined = false;
+                    for(var r in $scope.gator.deck_requirements.card) {
+
+                        var req = $scope.gator.deck_requirements.card[r];
+                        var c = Deck.getCardById($scope.cards, req);
+
+                        if (!c.octgn_id) {
+                            foundUndefined = true;
+                        }
+
+                        deck.push({card: c, count: 1});
+
+                    }
+
+                    var xml = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>\n';
+                    xml += '<deck game="a6d114c7-2e2a-4896-ad8c-0330605c90bf" sleeveid="0">\n';
+                    xml += '  <section name="Investigator" shared="False">\n';
+                    xml += '    <card qty="1" id="' + $scope.gator.octgn_id.split(":")[0] + '">' + $scope.gator.name + '</card>\n';
+                    xml += '    <card qty="1" id="' + $scope.gator.octgn_id.split(":")[1] + '">' + $scope.gator.name + '</card>\n';
+                    xml += '</section>\n';
+
+                    var cards = {};
+                    for (var i in deck) {
+
+                        var card = deck[i];
+                        if (!cards[card.card.type_code]) {
+                            cards[card.card.type_code] = "";
+                        }
+
+                        if (!card.card.octgn_id) {
+                            foundUndefined = true;
+                        }
+
+                        cards[card.card.type_code] += '    <card qty="' + card.count + '" id="' + card.card.octgn_id + '">' + card.card.name + '</card>\n';
+
+                    }
+
+                    xml += '  <section name="Asset" shared="False">\n';
+                    xml += cards.asset;
+                    xml += '  </section>\n';
+                    xml += '  <section name="Event" shared="False">\n';
+                    xml += cards.event;
+                    xml += '  </section>\n';
+                    xml += '  <section name="Skill" shared="False">\n';
+                    xml += cards.skill;
+                    xml += '  </section>\n';
+                    xml += '  <section name="Weakness" shared="False">\n';
+                    if (cards.treachery) {
+                        xml += cards.treachery;
+                    }
+                    xml += '  </section>\n';
+                    xml += '  <section name="Sideboard" shared="False" />\n';
+                    xml += '  <section name="Agenda" shared="True" />\n';
+                    xml += '  <section name="Act" shared="True" />\n';
+                    xml += '  <section name="Encounter" shared="True" />\n';
+                    xml += '  <section name="Location" shared="True" />\n';
+                    xml += '  <section name="Special" shared="True" />\n';
+                    xml += '  <section name="Second Special" shared="True" />\n';
+                    xml += '  <section name="Setup" shared="True" />\n';
+                    xml += '  <notes><![CDATA[]]></notes>\n';
+                    xml += '</deck>\n';
+
+                    if (foundUndefined) {
+                                                ModalService.showModal({
+                            templateUrl: "js/views/modal.html",
+                            controller: "ModalCtrl",
+                            inputs: {
+                                title: "Missing OCTGN ID",
+                                msg: "Some cards in this deck don't have OCTGN IDs in the database yet so a deck cannot be exported"
+                            }
+                        }).then(
+                            function(modal) {
+                                modal.element.modal();
+                                modal.close.then(
+                                    function(result) {
+                                
+                                    }
+                                );
+                            }
+                        );
+                        
+                        return;
+                    }
+
+                    download.fromData(xml, "application/xml", "deck.o8d");
                 }
             };
 

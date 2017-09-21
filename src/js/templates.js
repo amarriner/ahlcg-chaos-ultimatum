@@ -1,4 +1,4 @@
-angular.module("templates-templates", ["js/views/index.html"]);
+angular.module("templates-templates", ["js/views/index.html", "js/views/modal.html"]);
 
 angular.module("js/views/index.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("js/views/index.html",
@@ -14,7 +14,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            <a href=\"https://www.fantasyflightgames.com/en/news/2017/9/18/invoke-thy-name/\">Ultimatum of Chaos</a> \n" +
     "            method of playing the <a href=\"https://www.fantasyflightgames.com/en/products/arkham-horror-the-card-game/\">Arhkam Horror Living Card Game</a>. \n" +
     "            Select an investigator from the drop-down below and then click the <i class=\"fa fa-cog\"></i> button, or just click the <i class=\"fa fa-random\"></i> button. \n" +
-    "            To change which packs to build a deck from click the <i class=\"fa fa-check-square-o\"></i> button.\n" +
+    "            To change which packs to build a deck from click the <i class=\"fa fa-check-square-o\"></i> button. Click the <i class=\"fa fa-download\"></i> button to export the deck.\n" +
     "            Card data and images from <a href=\"https://arkhamdb.com\">https://arkhamdb.com</a>.\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -23,7 +23,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "        <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\">\n" +
     "                <select class=\"form-control\" ng-model=\"selectedGator\" ng-change=\"setGator()\">\n" +
-    "                    <option ng-repeat=\"g in gators | orderBy: 'name'\" value=\"{{g.code}}\">{{g.name}}</option>\n" +
+    "                    <option ng-repeat=\"g in gators | orderBy: 'name'\" value=\"{{g.code}}\" ng-show=\"validGator(g.code)\">{{g.name}}</option>\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        \n" +
@@ -37,6 +37,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                Packs\n" +
     "                </span>\n" +
     "            </button>\n" +
+    "            <button class=\"btn btn-primary\" ng-click=\"downloadOctgn()\"><i class=\"fa fa-download\"></i><span class=\"hidden-xs\"> Download OCTGN</span></button>\n" +
     "            <div id=\"include-unreleased\" class=\"checkbox\">\n" +
     "                <label>\n" +
     "                    <input type=\"checkbox\" ng-model=\"includeUnreleased\"><span class=\"hidden-xs\"> Include</span> Unreleased\n" +
@@ -47,8 +48,8 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"showPacks\">\n" +
-    "        <div class=\"col-sm-5\"></div>\n" +
+    "    <div class=\"row\" id=\"packs\" ng-show=\"showPacks\">\n" +
+    "        <div class=\"col-sm-3\"></div>\n" +
     "        <div class=\"col-sm-3 well\">\n" +
     "            <div class=\"form-inline\">\n" +
     "                <button class=\"btn btn-sm btn-primary\" ng-click=\"uncheckAllPacks()\">Uncheck All</button>\n" +
@@ -94,7 +95,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"col-md-6 hidden-xs hidden-sm\">\n" +
-    "                            <p ng-bind-html=\"gator.text\"></p>\n" +
+    "                            <p ng-bind-html=\"gator.text.replace('<b>', '<br/><b>')\"></p>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "\n" +
@@ -113,27 +114,47 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "\n" +
     "        <div class=\"row header\">\n" +
     "            <div class=\"hidden-xs col-sm-4\">Name</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">Count</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">Count</div>\n" +
     "            <div class=\"hidden-xs col-sm-1\">Type</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">Faction</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">Faction</div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">Traits</div>\n" +
     "            <div class=\"col-xs-12 hidden-sm hidden-md hidden-lg\">Deck</div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck\">\n" +
     "            <div class=\"hidden-xs col-sm-4\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a></div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">{{card.count}}</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.count}}</div>\n" +
     "            <div class=\"hidden-xs col-sm-1\">{{card.card.type_name}}</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">{{card.card.faction_name}}</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"images/{{card.card.faction_code}}.png\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">{{card.card.traits}}</div>\n" +
     "\n" +
     "            <div class=\"col-xs-7 hidden-sm hidden-md hidden-lg\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a> ({{card.count}})</div>\n" +
     "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\">{{card.card.type_name}}</div>\n" +
-    "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\">{{card.card.faction_name}}</div>\n" +
+    "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"images/{{card.card.faction_code}}.png\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
     "\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("js/views/modal.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("js/views/modal.html",
+    "<div class=\"modal fade\">\n" +
+    "  <div class=\"modal-dialog\">\n" +
+    "    <div class=\"modal-content\">\n" +
+    "      <div class=\"modal-header\">\n" +
+    "        <button type=\"button\" class=\"close\" ng-click=\"close(false)\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n" +
+    "        <h4 class=\"modal-title\">Missing OCTGN ID</h4>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-body\">\n" +
+    "        <p>{{msg}}</p>\n" +
+    "      </div>\n" +
+    "      <div class=\"modal-footer\">\n" +
+    "        <button type=\"button\" ng-click=\"close(false)\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>");
 }]);

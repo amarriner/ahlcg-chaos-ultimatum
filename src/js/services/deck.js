@@ -5,6 +5,8 @@
 
         function ($http, $q) {
 
+            var regex;
+
             var factions = [
                 "guardian",
                 "seeker",
@@ -96,7 +98,11 @@
 
                     var typeCount = 0;
 
-                    if (!option.faction && !option.trait) {
+                    //
+                    // If the only requirement is level, check for non-faction
+                    // totals before adding card
+                    //
+                    if (!option.faction && !option.trait && !option.uses) {
                         if (card.faction_code != gator.faction_code &&
                             card.faction_code != "Neutral") {
 
@@ -106,6 +112,31 @@
                                 }
                             }
 
+                        }
+                    }
+
+                    //
+                    // Check number of uses
+                    //
+                    if (option.uses) {
+
+                        regex = new RegExp("\([0-9][0-9]? charges\)");
+
+                        var foundUses = false;
+                        for (var u in option.uses) {
+
+                            if (regex.test(card.text)) {
+                                foundUses = true;
+                            }
+                            
+                        }
+
+                        //
+                        // If we didn't find the right type of uses,
+                        // continue to the next option iteration
+                        //
+                        if (!foundUses) {
+                            continue;
                         }
                     }
 
@@ -165,7 +196,7 @@
                         for (var j in option.trait) {
 
                             var trait = option.trait[j];
-                            var regex = new RegExp(trait.toLowerCase());
+                            regex = new RegExp(trait.toLowerCase());
                             if (card.traits && regex.test(card.traits.toLowerCase())) {
                                 foundTrait = true;
                             }
@@ -231,7 +262,7 @@
 
             }
 
-            function getCardById (cards, cardId) {
+            var getCardById = function (cards, cardId) {
 
                 for (var i in cards) {
 
@@ -243,7 +274,7 @@
 
                 return {};
 
-            }
+            };
 
             function getCardByName (cards, cardName) {
 
@@ -412,6 +443,7 @@
 
             return {
 
+                getCardById: getCardById,
                 getGatorById: getGatorById,
                 getRandomGator: getRandomGator,
                 makeDeck: makeDeck

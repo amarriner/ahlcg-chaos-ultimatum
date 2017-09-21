@@ -11,7 +11,7 @@
             <a href="https://www.fantasyflightgames.com/en/news/2017/9/18/invoke-thy-name/">Ultimatum of Chaos</a> 
             method of playing the <a href="https://www.fantasyflightgames.com/en/products/arkham-horror-the-card-game/">Arhkam Horror Living Card Game</a>. 
             Select an investigator from the drop-down below and then click the <i class="fa fa-cog"></i> button, or just click the <i class="fa fa-random"></i> button. 
-            To change which packs to build a deck from click the <i class="fa fa-check-square-o"></i> button.
+            To change which packs to build a deck from click the <i class="fa fa-check-square-o"></i> button. Click the <i class="fa fa-download"></i> button to export the deck.
             Card data and images from <a href="https://arkhamdb.com">https://arkhamdb.com</a>.
         </div>
     </div>
@@ -20,7 +20,7 @@
         <div class="col-xs-12">
             <div class="form-group">
                 <select class="form-control" ng-model="selectedGator" ng-change="setGator()">
-                    <option ng-repeat="g in gators | orderBy: 'name'" value="{{g.code}}">{{g.name}}</option>
+                    <option ng-repeat="g in gators | orderBy: 'name'" value="{{g.code}}" ng-show="validGator(g.code)">{{g.name}}</option>
                 </select>
             </div>
         
@@ -34,6 +34,7 @@
                 Packs
                 </span>
             </button>
+            <button class="btn btn-primary" ng-click="downloadOctgn()"><i class="fa fa-download"></i><span class="hidden-xs"> Download OCTGN</span></button>
             <div id="include-unreleased" class="checkbox">
                 <label>
                     <input type="checkbox" ng-model="includeUnreleased"><span class="hidden-xs"> Include</span> Unreleased
@@ -44,8 +45,8 @@
 
     </div>
 
-    <div class="row" ng-show="showPacks">
-        <div class="col-sm-5"></div>
+    <div class="row" id="packs" ng-show="showPacks">
+        <div class="col-sm-3"></div>
         <div class="col-sm-3 well">
             <div class="form-inline">
                 <button class="btn btn-sm btn-primary" ng-click="uncheckAllPacks()">Uncheck All</button>
@@ -91,7 +92,7 @@
                         </div>
 
                         <div class="col-md-6 hidden-xs hidden-sm">
-                            <p ng-bind-html="gator.text"></p>
+                            <p ng-bind-html="gator.text.replace('<b>', '<br/><b>')"></p>
                         </div>
                     </div>
 
@@ -110,23 +111,23 @@
 
         <div class="row header">
             <div class="hidden-xs col-sm-4">Name</div>
-            <div class="hidden-xs col-sm-1">Count</div>
+            <div class="hidden-xs col-sm-1 text-center">Count</div>
             <div class="hidden-xs col-sm-1">Type</div>
-            <div class="hidden-xs col-sm-1">Faction</div>
+            <div class="hidden-xs col-sm-1 text-center">Faction</div>
             <div class="hidden-xs col-sm-3">Traits</div>
             <div class="col-xs-12 hidden-sm hidden-md hidden-lg">Deck</div>
         </div>
 
         <div class="row" ng-class-even="'rowHighlight'" hover-class="hoverHighlight" ng-repeat="card in deck">
             <div class="hidden-xs col-sm-4"><a ng-href="{{card.card.url}}">{{card.card.name}}</a></div>
-            <div class="hidden-xs col-sm-1">{{card.count}}</div>
+            <div class="hidden-xs col-sm-1 text-center">{{card.count}}</div>
             <div class="hidden-xs col-sm-1">{{card.card.type_name}}</div>
-            <div class="hidden-xs col-sm-1">{{card.card.faction_name}}</div>
+            <div class="hidden-xs col-sm-1 text-center"><img ng-show="card.card.faction_name != 'Neutral'" ng-src="images/{{card.card.faction_code}}.png" alt="{{card.card.faction_name}}"></div>
             <div class="hidden-xs col-sm-3">{{card.card.traits}}</div>
 
             <div class="col-xs-7 hidden-sm hidden-md hidden-lg"><a ng-href="{{card.card.url}}">{{card.card.name}}</a> ({{card.count}})</div>
             <div class="col-xs-2 hidden-sm hidden-md hidden-lg">{{card.card.type_name}}</div>
-            <div class="col-xs-2 hidden-sm hidden-md hidden-lg">{{card.card.faction_name}}</div>
+            <div class="col-xs-2 hidden-sm hidden-md hidden-lg"><img ng-show="card.card.faction_name != 'Neutral'" ng-src="images/{{card.card.faction_code}}.png" alt="{{card.card.faction_name}}"></div>
         </div>
 
     </div>

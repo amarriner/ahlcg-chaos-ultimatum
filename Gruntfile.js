@@ -185,12 +185,14 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'dist/js/app.js': [
+                        'src/libs/jquery/dist/jquery.js',
                         'src/libs/angular/angular.js',
                         'src/libs/angular-route/angular-route.js',
                         'src/libs/angular-sanitize/angular-sanitize.js',
-                        'src/libs/jquery/dist/jquery.js',
                         'src/libs/bootstrap/dist/js/bootstrap.js',
                         'src/libs/angular-bootstrap/ui-bootstrap-tpls.js',
+                        'src/libs/angular-download/angular-download.js',
+                        'src/libs/angular-modal-service/dst/angular-modal-service.min.js',
                         'src/js/templates.js',
                         'src/js/app.js',
                         'src/js/**/*.js'
