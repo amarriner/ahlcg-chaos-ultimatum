@@ -33,7 +33,8 @@
                             controller: "ModalCtrl",
                             inputs: {
                                 title: "ERROR",
-                                msg: "ERROR LOADING GATORS"
+                                msg: "ERROR LOADING GATORS",
+                                packs: []
                             }
                         }).then(
                             function(modal) {
@@ -62,7 +63,8 @@
                             controller: "ModalCtrl",
                             inputs: {
                                 title: "ERROR",
-                                msg: "ERROR LOADING CARDS"
+                                msg: "ERROR LOADING CARDS",
+                                packs: []
                             }
                         }).then(
                             function(modal) {
@@ -109,7 +111,8 @@
                             controller: "ModalCtrl",
                             inputs: {
                                 title: "ERROR",
-                                msg: "ERROR LOADING PACKS"
+                                msg: "ERROR LOADING PACKS",
+                                packs: []
                             }
                         }).then(
                             function(modal) {
@@ -208,7 +211,8 @@
                             controller: "ModalCtrl",
                             inputs: {
                                 title: "Missing OCTGN ID",
-                                msg: "This investigator doesn't have an OCTGN ID in the database yet so a deck cannot be exported"
+                                msg: "This investigator doesn't have an OCTGN ID in the database yet so a deck cannot be exported",
+                                packs: []
                             }
                         }).then(
                             function(modal) {
@@ -289,12 +293,13 @@
                     xml += '</deck>\n';
 
                     if (foundUndefined) {
-                                                ModalService.showModal({
+                        ModalService.showModal({
                             templateUrl: "js/views/modal.html",
                             controller: "ModalCtrl",
                             inputs: {
                                 title: "Missing OCTGN ID",
-                                msg: "Some cards in this deck don't have OCTGN IDs in the database yet so a deck cannot be exported"
+                                msg: "Some cards in this deck don't have OCTGN IDs in the database yet so a deck cannot be exported",
+                                packs: []
                             }
                         }).then(
                             function(modal) {
