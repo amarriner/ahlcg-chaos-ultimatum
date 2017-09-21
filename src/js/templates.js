@@ -30,13 +30,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            <div class=\"form-group\">\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"makeDeck()\"><i class=\"fa fa-cog\"></i><span class=\"hidden-xs\"> Make Deck</span></button>\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"randomGator()\"><i class=\"fa fa-random\"></i><span class=\"hidden-xs\"> Random Investigator</span></button>\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"toggleShowPacks()\">\n" +
-    "                <i class=\"fa fa-check-square-o\"></i>\n" +
-    "                <span class=\"hidden-xs\">\n" +
-    "                <span ng-show=\"!showPacks\">Show</span><span ng-show=\"showPacks\">Hide</span> \n" +
-    "                Packs\n" +
-    "                </span>\n" +
-    "            </button>\n" +
+    "            <button class=\"btn btn-primary\" ng-click=\"toggleShowPacks()\"><i class=\"fa fa-check-square-o\"></i><span class=\"hidden-xs\">Show Packs</span></button>\n" +
     "            <button class=\"btn btn-primary\" ng-click=\"downloadOctgn()\"><i class=\"fa fa-download\"></i><span class=\"hidden-xs\"> Download OCTGN</span></button>\n" +
     "            <div id=\"include-unreleased\" class=\"checkbox\">\n" +
     "                <label>\n" +
@@ -113,24 +107,26 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "    <div ng-show=\"deck\">\n" +
     "\n" +
     "        <div class=\"row header\">\n" +
-    "            <div class=\"hidden-xs col-sm-4\">Name</div>\n" +
+    "            <div class=\"hidden-xs col-sm-4 col-md-3\">Name</div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">Count</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">Type</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">Type</div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">Faction</div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">Traits</div>\n" +
+    "            <div class=\"hidden-xs hidden-sm col-md-3\">Pack</div> \n" +
     "            <div class=\"col-xs-12 hidden-sm hidden-md hidden-lg\">Deck</div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck\">\n" +
-    "            <div class=\"hidden-xs col-sm-4\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a></div>\n" +
+    "            <div class=\"hidden-xs col-sm-4 col-md-3\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a></div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.count}}</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1\">{{card.card.type_name}}</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1 text-center\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"images/{{card.card.faction_code}}.png\" alt=\"{{card.card.faction_name}}\"></div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.card.type_name}}</div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\"><img ng-show=\"card.card.faction_code != 'neutral'\" ng-src=\"{{card.card.faction_code != 'neutral' ? 'images/' + card.card.faction_code + '.png' : ''}}\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">{{card.card.traits}}</div>\n" +
+    "            <div class=\"hidden-xs hidden-sm col-md-3\">{{card.card.pack_name}}</div>\n" +
     "\n" +
     "            <div class=\"col-xs-7 hidden-sm hidden-md hidden-lg\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a> ({{card.count}})</div>\n" +
     "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\">{{card.card.type_name}}</div>\n" +
-    "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"images/{{card.card.faction_code}}.png\" alt=\"{{card.card.faction_name}}\"></div>\n" +
+    "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"{{card.card.faction_code != 'neutral' ? 'images/' + card.card.faction_code + '.png' : ''}}\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -146,10 +142,25 @@ angular.module("js/views/modal.html", []).run(["$templateCache", function($templ
     "    <div class=\"modal-content\">\n" +
     "      <div class=\"modal-header\">\n" +
     "        <button type=\"button\" class=\"close\" ng-click=\"close(false)\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n" +
-    "        <h4 class=\"modal-title\">Missing OCTGN ID</h4>\n" +
+    "        <h4 class=\"modal-title\">{{title}}</h4>\n" +
     "      </div>\n" +
     "      <div class=\"modal-body\">\n" +
-    "        <p>{{msg}}</p>\n" +
+    "\n" +
+    "        <p ng-show=\"msg\">{{msg}}</p>\n" +
+    "\n" +
+    "        <div class=\"\" id=\"packs\" ng-show=\"packs\">\n" +
+    "            <div class=\"form-inline\">\n" +
+    "                <button class=\"btn btn-sm btn-primary\" ng-click=\"uncheckAllPacks()\">Uncheck All</button>\n" +
+    "                <button class=\"btn btn-sm btn-primary\" ng-click=\"checkAllPacks()\">Check All</button>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"checkbox\" ng-repeat=\"p in packs\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\" ng-model=\"p.checked\"> {{p.name}}\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" ng-click=\"close(false)\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>\n" +

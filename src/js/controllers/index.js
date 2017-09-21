@@ -19,7 +19,6 @@
             $scope.selectedGator = null;
             $scope.cards = null;
             $scope.gators = null;
-            $scope.showPacks = false;
 
             Resource.getGators().then(
                 function(success) {
@@ -131,7 +130,6 @@
                 if ($scope.selectedGator) {
                     $scope.setGator();
                     $scope.deck = Deck.makeDeck($scope.gator, $scope.cards, $scope.packs, $scope.includeUnreleased);
-                    $scope.showPacks = false;
                 }
             };
 
@@ -180,19 +178,24 @@
             };
 
             $scope.toggleShowPacks = function() {
-                $scope.showPacks = !$scope.showPacks;
-            };
-
-            $scope.checkAllPacks = function() {
-                for (var i in $scope.packs) {
-                    $scope.packs[i].checked = true;
-                }
-            };
-
-            $scope.uncheckAllPacks = function() {
-                for (var i in $scope.packs) {
-                    $scope.packs[i].checked = false;
-                }
+                ModalService.showModal({
+                    templateUrl: "js/views/modal.html",
+                    controller: "ModalCtrl",
+                    inputs: {
+                        title: "Set Packs",
+                        msg: "",
+                        packs: $scope.packs
+                    }
+                }).then(
+                    function(modal) {
+                        modal.element.modal();
+                        modal.close.then(
+                            function(result) {
+                                $scope.packs = result;
+                            }
+                        );
+                    }
+                );
             };
 
             $scope.downloadOctgn = function() {
@@ -222,7 +225,7 @@
 
                     }
 
-                    var deck = $scope.deck;
+                    var deck = $scope.deck.slice();
                     var foundUndefined = false;
                     for(var r in $scope.gator.deck_requirements.card) {
 

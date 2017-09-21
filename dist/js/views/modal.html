@@ -3,10 +3,25 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Missing OCTGN ID</h4>
+        <h4 class="modal-title">{{title}}</h4>
       </div>
       <div class="modal-body">
-        <p>{{msg}}</p>
+
+        <p ng-show="msg">{{msg}}</p>
+
+        <div class="" id="packs" ng-show="packs">
+            <div class="form-inline">
+                <button class="btn btn-sm btn-primary" ng-click="uncheckAllPacks()">Uncheck All</button>
+                <button class="btn btn-sm btn-primary" ng-click="checkAllPacks()">Check All</button>
+            </div>
+
+            <div class="checkbox" ng-repeat="p in packs">
+                <label>
+                    <input type="checkbox" ng-model="p.checked"> {{p.name}}
+                </label>
+            </div>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" ng-click="close(false)" class="btn btn-primary" data-dismiss="modal">OK</button>
