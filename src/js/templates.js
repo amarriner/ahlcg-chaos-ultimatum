@@ -1,4 +1,4 @@
-angular.module("templates-templates", ["js/views/index.html", "js/views/modal.html"]);
+angular.module("templates-templates", ["js/views/index.html", "js/views/modal.html", "js/views/sort.html"]);
 
 angular.module("js/views/index.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("js/views/index.html",
@@ -68,10 +68,10 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                        <div class=\"col-xs-12 col-sm-12 col-md-6\">\n" +
     "                            <div class=\"row\">\n" +
     "                                <div class=\"col-xs-3\"></div>\n" +
-    "                                <div class=\"header col-xs-1\"><span class=\"icon-willpower\"></span></div>\n" +
-    "                                <div class=\"header col-xs-1\"><span class=\"icon-intellect\"></span></div>\n" +
-    "                                <div class=\"header col-xs-1\"><span class=\"icon-combat\"></span></div>\n" +
-    "                                <div class=\"header col-xs-1\"><span class=\"icon-agility\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-willpower font-normal\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-intellect font-normal\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-combat font-normal\"></span></div>\n" +
+    "                                <div class=\"header col-xs-1\"><span class=\"icon-agility font-normal\"></span></div>\n" +
     "                                <div class=\"header col-xs-1\">H</div>\n" +
     "                                <div class=\"header col-xs-1\">S</div>\n" +
     "                                \n" +
@@ -107,16 +107,51 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "    <div ng-show=\"deck\">\n" +
     "\n" +
     "        <div class=\"row header\">\n" +
-    "            <div class=\"hidden-xs col-sm-4 col-md-3\">Name</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1 text-center\">Count</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1 text-center\">Type</div>\n" +
-    "            <div class=\"hidden-xs col-sm-1 text-center\">Faction</div>\n" +
+    "            <div class=\"hidden-xs col-sm-4 col-md-3\">\n" +
+    "                <sort-control   name=\"Name\"\n" +
+    "                                sort=\"sort\"\n" +
+    "                                order=\"order\"\n" +
+    "                                column=\"card.name\"\n" +
+    "                                ng-click=\"toggleSort('card.name')\">\n" +
+    "                </sort-control>\n" +
+    "            </div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">\n" +
+    "                <sort-control   name=\"Count\"\n" +
+    "                                sort=\"sort\"\n" +
+    "                                order=\"order\"\n" +
+    "                                column=\"count\"\n" +
+    "                                ng-click=\"toggleSort('count')\">\n" +
+    "                </sort-control>\n" +
+    "            </div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 text-center\">\n" +
+    "                <sort-control   name=\"Type\"\n" +
+    "                                sort=\"sort\"\n" +
+    "                                order=\"order\"\n" +
+    "                                column=\"card.type_code\"\n" +
+    "                                ng-click=\"toggleSort('card.type_code')\">\n" +
+    "                </sort-control>\n" +
+    "            </div>\n" +
+    "            <div class=\"hidden-xs col-sm-1 col-md-1\">\n" +
+    "                <sort-control   name=\"Faction\"\n" +
+    "                                sort=\"sort\"\n" +
+    "                                order=\"order\"\n" +
+    "                                column=\"card.faction_code\"\n" +
+    "                                ng-click=\"toggleSort('card.faction_code')\">\n" +
+    "                </sort-control>\n" +
+    "            </div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">Traits</div>\n" +
-    "            <div class=\"hidden-xs hidden-sm col-md-3\">Pack</div> \n" +
+    "            <div class=\"hidden-xs hidden-sm col-md-3\">\n" +
+    "                <sort-control   name=\"Pack\"\n" +
+    "                                sort=\"sort\"\n" +
+    "                                order=\"order\"\n" +
+    "                                column=\"card.pack_code\"\n" +
+    "                                ng-click=\"toggleSort('card.pack_code')\">\n" +
+    "                </sort-control>\n" +
+    "            </div> \n" +
     "            <div class=\"col-xs-12 hidden-sm hidden-md hidden-lg\">Deck</div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck\">\n" +
+    "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck | orderBy: order + sort\">\n" +
     "            <div class=\"hidden-xs col-sm-4 col-md-3\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a></div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.count}}</div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.card.type_name}}</div>\n" +
@@ -167,5 +202,17 @@ angular.module("js/views/modal.html", []).run(["$templateCache", function($templ
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "</div>");
+}]);
+
+angular.module("js/views/sort.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("js/views/sort.html",
+    "<div class=\"point\">\n" +
+    "    <i class=\"fa\"\n" +
+    "        ng-show=\"sort === column\"\n" +
+    "        ng-class=\"{'fa-caret-up': order === '+', 'fa-caret-down': order === '-'}\">\n" +
+    "    </i>\n" +
+    "    <i class=\"fa fa-sort\" ng-show=\"sort !== column\"></i>\n" +
+    "    <strong>{{name}}</strong>\n" +
     "</div>");
 }]);

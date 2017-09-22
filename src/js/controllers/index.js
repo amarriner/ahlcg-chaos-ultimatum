@@ -15,6 +15,8 @@
 
         function($scope, Resource, Deck, download, ModalService, $window, $base64, $routeParams, $q, $location, $route) {
 
+            $scope.sort = "card.name";
+            $scope.order = "+";
             $scope.deckstring = $window.decodeURIComponent($routeParams.deckstring);
             $scope.includeUnreleased = false;
             $scope.selectedGator = null;
@@ -390,7 +392,7 @@
 
                 $scope.selectedGator = gator.code;
                 $scope.gator = gator;
-                $scope.deck = d;
+                $scope.deck = Deck.sortDeck(d);
             };
 
             $scope.pad = function(s, pad, length) {
@@ -424,6 +426,22 @@
                         );
                     }
                 );
+            };
+
+            $scope.toggleSort = function(column) {
+
+                if ($scope.order === "-") {
+                    $scope.order = "+";
+                }
+                else {
+                    $scope.order = "-";
+                }
+
+                if (column != $scope.sort) {
+                    $scope.order = "+";
+                }
+                
+                $scope.sort = column;
             };
 
         }

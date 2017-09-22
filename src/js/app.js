@@ -41,6 +41,21 @@
                 });
             }
         };
-    });
+    })
+    .directive('sortControl', [
+        function() {
+            return {
+                templateUrl: 'js/views/sort.html',
+                restrict: 'E',
+                scope: {
+                    column: '@',
+                    name: '@',
+                    sort: '=',
+                    order: '=',
+                    toggle: '&'
+                }
+            };
+        }
+    ]);
 
 }());

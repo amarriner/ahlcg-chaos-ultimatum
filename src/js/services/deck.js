@@ -376,6 +376,22 @@
 
             };
 
+            var sortDeck = function(deck) {
+                return deck.sort(
+                    function(a, b) {
+                        if (a.card.name < b.card.name) {
+                            return -1;
+                        }
+
+                        if (a.card.name > b.card.name) {
+                            return 1;
+                        }
+
+                        return 0;
+                    }
+                );
+            };
+
             var makeDeck = function (gator, cards, packs, includeUnreleased) {
 
                 var deck = [];
@@ -396,22 +412,22 @@
                         deck.push(c);
                     }
                     
-                    deck.sort(
-                        function(a, b) {
-                            if (a.name < b.name) {
-                                return -1;
-                            }
-
-                            if (a.name > b.name) {
-                                return 1;
-                            }
-
-                            return 0;
-                        }
-                    );
-
                     count++;
                 }
+
+                deck.sort(
+                    function(a, b) {
+                        if (a.name < b.name) {
+                            return -1;
+                        }
+
+                        if (a.name > b.name) {
+                            return 1;
+                        }
+
+                        return 0;
+                    }
+                );
 
                 count = 0;
                 var lastCard = {};
@@ -446,7 +462,8 @@
                 getCardById: getCardById,
                 getGatorById: getGatorById,
                 getRandomGator: getRandomGator,
-                makeDeck: makeDeck
+                makeDeck: makeDeck,
+                sortDeck: sortDeck
 
             };
 

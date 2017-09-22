@@ -65,10 +65,10 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <div class="row">
                                 <div class="col-xs-3"></div>
-                                <div class="header col-xs-1"><span class="icon-willpower"></span></div>
-                                <div class="header col-xs-1"><span class="icon-intellect"></span></div>
-                                <div class="header col-xs-1"><span class="icon-combat"></span></div>
-                                <div class="header col-xs-1"><span class="icon-agility"></span></div>
+                                <div class="header col-xs-1"><span class="icon-willpower font-normal"></span></div>
+                                <div class="header col-xs-1"><span class="icon-intellect font-normal"></span></div>
+                                <div class="header col-xs-1"><span class="icon-combat font-normal"></span></div>
+                                <div class="header col-xs-1"><span class="icon-agility font-normal"></span></div>
                                 <div class="header col-xs-1">H</div>
                                 <div class="header col-xs-1">S</div>
                                 
@@ -104,16 +104,51 @@
     <div ng-show="deck">
 
         <div class="row header">
-            <div class="hidden-xs col-sm-4 col-md-3">Name</div>
-            <div class="hidden-xs col-sm-1 text-center">Count</div>
-            <div class="hidden-xs col-sm-1 text-center">Type</div>
-            <div class="hidden-xs col-sm-1 text-center">Faction</div>
+            <div class="hidden-xs col-sm-4 col-md-3">
+                <sort-control   name="Name"
+                                sort="sort"
+                                order="order"
+                                column="card.name"
+                                ng-click="toggleSort('card.name')">
+                </sort-control>
+            </div>
+            <div class="hidden-xs col-sm-1 text-center">
+                <sort-control   name="Count"
+                                sort="sort"
+                                order="order"
+                                column="count"
+                                ng-click="toggleSort('count')">
+                </sort-control>
+            </div>
+            <div class="hidden-xs col-sm-1 text-center">
+                <sort-control   name="Type"
+                                sort="sort"
+                                order="order"
+                                column="card.type_code"
+                                ng-click="toggleSort('card.type_code')">
+                </sort-control>
+            </div>
+            <div class="hidden-xs col-sm-1 col-md-1">
+                <sort-control   name="Faction"
+                                sort="sort"
+                                order="order"
+                                column="card.faction_code"
+                                ng-click="toggleSort('card.faction_code')">
+                </sort-control>
+            </div>
             <div class="hidden-xs col-sm-3">Traits</div>
-            <div class="hidden-xs hidden-sm col-md-3">Pack</div> 
+            <div class="hidden-xs hidden-sm col-md-3">
+                <sort-control   name="Pack"
+                                sort="sort"
+                                order="order"
+                                column="card.pack_code"
+                                ng-click="toggleSort('card.pack_code')">
+                </sort-control>
+            </div> 
             <div class="col-xs-12 hidden-sm hidden-md hidden-lg">Deck</div>
         </div>
 
-        <div class="row" ng-class-even="'rowHighlight'" hover-class="hoverHighlight" ng-repeat="card in deck">
+        <div class="row" ng-class-even="'rowHighlight'" hover-class="hoverHighlight" ng-repeat="card in deck | orderBy: order + sort">
             <div class="hidden-xs col-sm-4 col-md-3"><a ng-href="{{card.card.url}}">{{card.card.name}}</a></div>
             <div class="hidden-xs col-sm-1 text-center">{{card.count}}</div>
             <div class="hidden-xs col-sm-1 text-center">{{card.card.type_name}}</div>
