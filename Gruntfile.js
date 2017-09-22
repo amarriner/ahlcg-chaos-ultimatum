@@ -3,6 +3,13 @@ module.exports = function(grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        browserify: {
+            varint: {
+                src: 'varint.js',
+                dest: 'src/js/varint.js'
+            }
+        },
+
         clean: {
             dist: ['dist/**/*'],
             src: ['src/index.html', 'src/css/libs.css']
@@ -125,7 +132,7 @@ module.exports = function(grunt) {
         jshint: {
             all: {
                     options: {
-                        ignores: []
+                        ignores: ["src/js/varint.js"]
                     },
                     files: {
                         src: [
@@ -186,6 +193,7 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'dist/js/app.js': [
+                        'src/varint.js',
                         'src/libs/jquery/dist/jquery.js',
                         'src/libs/angular/angular.js',
                         'src/libs/angular-route/angular-route.js',
@@ -194,6 +202,7 @@ module.exports = function(grunt) {
                         'src/libs/angular-bootstrap/ui-bootstrap-tpls.js',
                         'src/libs/angular-download/angular-download.js',
                         'src/libs/angular-modal-service/dst/angular-modal-service.min.js',
+                        'src/libs/angular-base64/angular-base64.js',
                         'src/js/templates.js',
                         'src/js/app.js',
                         'src/js/**/*.js'
@@ -236,6 +245,7 @@ module.exports = function(grunt) {
 
     grunt.config.set('dir', 'dist');
 
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -251,6 +261,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('lint', ['htmlangular', 'jsonlint', 'jshint' ]);
     grunt.registerTask('minify', ['uglify:concat', 'uglify:minify', 'concat:css', 'copy:css', 'cssmin']);
-    grunt.registerTask('build', ['clean:dist', 'lint', 'html2js', 'minify', 'preprocess:src', 'preprocess:dist', 'copy:fontAwesome', 'copy:fonts', 'copy:images', 'copy:json', 'copy:templates']);
+    grunt.registerTask('build', ['browserify', 'clean:dist', 'lint', 'html2js', 'minify', 'preprocess:src', 'preprocess:dist', 'copy:fontAwesome', 'copy:fonts', 'copy:images', 'copy:json', 'copy:templates']);
 
 };

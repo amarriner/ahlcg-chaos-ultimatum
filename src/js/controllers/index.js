@@ -5,134 +5,108 @@
 
     module.config(['$routeProvider', function($routeProvider) {
 
-        $routeProvider.when('/', {
+        $routeProvider.when('/:deckstring?', {
             templateUrl: 'js/views/index.html',
             controller: 'IndexCtrl'
         });
 
     }])
-    .controller('IndexCtrl', ['$scope', 'Resource', 'Deck', 'download', 'ModalService',
+    .controller('IndexCtrl', ['$scope', 'Resource', 'Deck', 'download', 'ModalService', '$window', '$base64', '$routeParams', '$q', '$location', '$route',
 
-        function($scope, Resource, Deck, download, ModalService) {
+        function($scope, Resource, Deck, download, ModalService, $window, $base64, $routeParams, $q, $location, $route) {
 
+            $scope.deckstring = $window.decodeURIComponent($routeParams.deckstring);
             $scope.includeUnreleased = false;
             $scope.selectedGator = null;
             $scope.cards = null;
             $scope.gators = null;
 
-            Resource.getGators().then(
-                function(success) {
+            function getGators() {
+                return $q(function(resolve, reject) {
+           
+                    Resource.getGators().then(
+                        function(success) {
 
-                    $scope.gators = success.data;
+                            $scope.gators = success.data;
+                            resolve("Loaded Gators");
 
-                },
-                function(error) {
-
-                        ModalService.showModal({
-                            templateUrl: "js/views/modal.html",
-                            controller: "ModalCtrl",
-                            inputs: {
-                                title: "ERROR",
-                                msg: "ERROR LOADING GATORS",
-                                packs: []
-                            }
-                        }).then(
-                            function(modal) {
-                                modal.element.modal();
-                                modal.close.then(
-                                    function(result) {
-                                
-                                    }
-                                );
-                            }
-                        );
-
-                }
-            );
-
-            Resource.getCards().then(
-                function(success) {
-
-                    $scope.cards = success.data;
-
-                },
-                function(error) {
-
-                        ModalService.showModal({
-                            templateUrl: "js/views/modal.html",
-                            controller: "ModalCtrl",
-                            inputs: {
-                                title: "ERROR",
-                                msg: "ERROR LOADING CARDS",
-                                packs: []
-                            }
-                        }).then(
-                            function(modal) {
-                                modal.element.modal();
-                                modal.close.then(
-                                    function(result) {
-                                
-                                    }
-                                );
-                            }
-                        );
-
-
-                }
-            );
-
-            Resource.getPacks().then(
-                function(success) {
-
-                    $scope.packs = success.data;
-                    for (var i in $scope.packs) {
-                        $scope.packs[i].checked = true;
-                    }
-
-                    $scope.packs.sort(function(a, b) {
-                        var apos = (a.cycle_position * 100) + a.position;
-                        var bpos = (b.cycle_position * 100) + b.position;
-                                
-                        if (apos < bpos) {
-                            return -1;
+                        },
+                        function(error) {
+                            reject("ERROR LOADING GATORS");
                         }
-                        if (apos > bpos) {
-                            return 1;
+                    );
+                });
+            }
+
+            function getCards() {
+                return $q(function(resolve, reject) {
+                    Resource.getCards().then(
+                        function(success) {
+
+                            $scope.cards = success.data;
+                            resolve("Loaded Cards");
+
+                        },
+                        function(error) {
+                            reject("ERROR LOADING CARDS");
+                        }
+                    );
+                });
+            }
+
+            function getPacks() {
+                return $q(function(resolve, reject) {
+                    Resource.getPacks().then(
+                        function(success) {
+
+                        $scope.packs = success.data;
+
+                        for (var i in $scope.packs) {
+                            $scope.packs[i].checked = true;
                         }
 
-                        return 0;
-                    });
-
-                },
-                function(error) {
-
-                        ModalService.showModal({
-                            templateUrl: "js/views/modal.html",
-                            controller: "ModalCtrl",
-                            inputs: {
-                                title: "ERROR",
-                                msg: "ERROR LOADING PACKS",
-                                packs: []
-                            }
-                        }).then(
-                            function(modal) {
-                                modal.element.modal();
-                                modal.close.then(
-                                    function(result) {
+                        $scope.packs.sort(function(a, b) {
+                            var apos = (a.cycle_position * 100) + a.position;
+                            var bpos = (b.cycle_position * 100) + b.position;
                                 
-                                    }
-                                );
+                            if (apos < bpos) {
+                                return -1;
                             }
-                        );
+                            if (apos > bpos) {
+                                return 1;
+                            }
 
+                            return 0;
+                        });
+                       
+                        resolve("Loaded Packs");
 
+                        },
+                        function(error) {
+                            reject("ERROR LOADING PACKS");
+                        }
+                    );
+                });
+            }
+
+            getGators().then(function(success) {
+            getCards().then(function(success) {
+            getPacks().then(function(success) {
+
+                if ($scope.deckstring) {
+                    $scope.decodeDeck();
                 }
-            );
+
+            }).catch(function(error) { $scope.showModal("ERROR", error, []); } );
+            }).catch(function(error) { $scope.showModal("ERROR", error, []); } );
+            }).catch(function(error) { $scope.showModal("ERROR", error, []); } );
 
             $scope.makeDeck = function() {
                 if ($scope.selectedGator) {
                     $scope.setGator();
                     $scope.deck = Deck.makeDeck($scope.gator, $scope.cards, $scope.packs, $scope.includeUnreleased);
+                    $scope.deckstring = $scope.encodeDeck();
+                    $route.updateParams({deckstring: $window.encodeURIComponent($scope.deckstring)});
                 }
             };
 
@@ -234,7 +208,7 @@
                     for(var r in $scope.gator.deck_requirements.card) {
 
                         var req = $scope.gator.deck_requirements.card[r];
-                        var c = Deck.getCardById($scope.cards, req);
+                        var c = Deck.getCardById(req, $scope.cards);
 
                         if (!c.octgn_id) {
                             foundUndefined = true;
@@ -342,6 +316,114 @@
 
                 return text;
 
+            };
+
+            $scope.encodeDeck = function() {
+
+                var a = [parseInt($scope.gator.code)];
+                var ones = [];
+                var twos = [];
+                var others = [];
+                for (var i in $scope.deck) {
+
+                    if ($scope.deck[i].count === 1) {
+                        ones.push(parseInt($scope.deck[i].card.code));                        
+                    }
+
+                    if ($scope.deck[i].count === 2) {
+                        twos.push(parseInt($scope.deck[i].card.code));                        
+                    }
+
+                    if ($scope.deck[i].count > 2) {
+                        others.push(parseInt($scope.deck[i].card.code));                        
+                    }
+                
+                }
+                
+                a = a.concat(ones.length, ones, twos.length, twos, others.length, others);
+                
+                var v = [];
+                var index = 0;
+                for (i in a) {
+                    $window.varint.encode(a[i], v, index);
+                    index += $window.varint.encode.bytes;
+                }
+
+                return $base64.encode(String.fromCharCode.apply(null, v));
+            };
+
+            $scope.decodeDeck = function() {
+
+                var decoded = $base64.decode($scope.deckstring);
+                var a = new Uint8Array(decoded.length);
+
+                for (var i = 0; i < decoded.length; i++) {
+                    a[i] = decoded.charCodeAt(i);
+                }
+
+                var v = [];
+                var index = 0;
+                for (i = 0; i < a.length; i++) {
+
+                    try {
+                        v.push(varint.decode(a, index));
+                        index += varint.decode.bytes;
+                    }
+                    catch(err) {
+                        break;
+                    }
+                }
+
+                var d = [];
+                var card;
+                var gator = Deck.getGatorById($scope.pad(v[0], "0", 5), $scope.gators);
+                for (i = 2; i <= v[1] + 1; i++) {
+                    card = Deck.getCardById($scope.pad(v[i], "0", 5), $scope.cards);
+                    d.push({card: card, count: 1});
+                }
+
+                var n = i;
+                for (i = n + 1; i <= n + v[n]; i++) {
+                    card = Deck.getCardById($scope.pad(v[i], "0", 5), $scope.cards);
+                    d.push({card: card, count: 2});
+                }
+
+                $scope.selectedGator = gator.code;
+                $scope.gator = gator;
+                $scope.deck = d;
+            };
+
+            $scope.pad = function(s, pad, length) {
+                
+                var str = s.toString();
+                while (str.length < length) {
+                    
+                    str = pad + str;
+
+                }
+
+                return str.toString();
+            };
+
+            $scope.showModal = function(title, msg, packs) {
+                ModalService.showModal({
+                    templateUrl: "js/views/modal.html",
+                    controller: "ModalCtrl",
+                    inputs: {
+                        title: title,
+                        msg: msg,
+                        packs: packs
+                    }
+                }).then(
+                    function(modal) {
+                        modal.element.modal();
+                        modal.close.then(
+                            function(result) {
+
+                            }
+                        );
+                    }
+                );
             };
 
         }

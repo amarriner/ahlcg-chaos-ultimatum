@@ -1,6 +1,6 @@
 {
   "name": "ahlcg-chaos-ultimatum",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "description": "Randomly Builds an Arkham Horror LCG Deck for the Chaos Ultimatum",
   "main": "index.js",
   "scripts": {
@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/amarriner/ahlcg-chaos-ultimatum#readme",
   "dependencies": {
+    "browserify": "^14.4.0",
     "express": "^4.15.4",
     "grunt": "^1.0.1",
+    "grunt-browserify": "^5.2.0",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-copy": "^1.0.0",
@@ -31,6 +33,7 @@
     "grunt-html2js": "^0.5.1",
     "grunt-jsonlint": "^1.1.0",
     "grunt-preprocess": "^5.1.0",
-    "sync-request": "^4.1.0"
+    "sync-request": "^4.1.0",
+    "varint": "^5.0.0"
   }
 }

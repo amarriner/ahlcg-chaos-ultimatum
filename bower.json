@@ -25,6 +25,7 @@
     "bootstrap": "~3.3.7",
     "angular-sanitize": "~1.6.6",
     "angular-download": "~0.0.2",
-    "angular-modal-service": "~0.12.1"
+    "angular-modal-service": "~0.12.1",
+    "angular-base64": "~2.0.5"
   }
 }

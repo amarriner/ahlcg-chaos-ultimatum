@@ -262,7 +262,7 @@
 
             }
 
-            var getCardById = function (cards, cardId) {
+            var getCardById = function (cardId, cards) {
 
                 for (var i in cards) {
 

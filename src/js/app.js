@@ -3,6 +3,7 @@
 
     var module = angular.module('ahlcgChaosUltimatum', [
         'angularModalService',
+        'base64',
         'download',
         'ngRoute',
         'ngSanitize',
@@ -10,17 +11,19 @@
         'ahlcgChaosUltimatum.resourceFactory',
         'ahlcgChaosUltimatum.index',
         'ahlcgChaosUltimatum.modal',
-        'ui.bootstrap',
+        'ui.bootstrap'
     ])
     .config(['$routeProvider',
         function($routeProvider) {
             
-            $routeProvider.when('/', {
+            $routeProvider.when('/:deckstring?', {
                 controller: 'IndexCtrl',
                 templateUrl: 'js/views/index.html'
-            }).otherwise({
-                redirectTo: '/'
-            });
+            })
+            //.otherwise({
+            //    redirectTo: '/'
+            //});
+            ;
 
     }])
     .directive('hoverClass', function () {

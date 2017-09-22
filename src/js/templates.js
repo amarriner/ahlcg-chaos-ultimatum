@@ -148,7 +148,7 @@ angular.module("js/views/modal.html", []).run(["$templateCache", function($templ
     "\n" +
     "        <p ng-show=\"msg\">{{msg}}</p>\n" +
     "\n" +
-    "        <div class=\"\" id=\"packs\" ng-show=\"packs\">\n" +
+    "        <div class=\"\" id=\"packs\" ng-show=\"packs.length > 0\">\n" +
     "            <div class=\"form-inline\">\n" +
     "                <button class=\"btn btn-sm btn-primary\" ng-click=\"uncheckAllPacks()\">Uncheck All</button>\n" +
     "                <button class=\"btn btn-sm btn-primary\" ng-click=\"checkAllPacks()\">Check All</button>\n" +
