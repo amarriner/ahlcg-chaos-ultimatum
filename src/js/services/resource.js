@@ -63,6 +63,10 @@
                         }
                     );
 
+                },
+
+                setPacks: function(p) {
+                    packs = p;
                 }
 
             };

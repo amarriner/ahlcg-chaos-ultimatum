@@ -136,6 +136,7 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "                                sort=\"sort\"\n" +
     "                                order=\"order\"\n" +
     "                                column=\"card.faction_code\"\n" +
+    "                                cls=\"text-center\"\n" +
     "                                ng-click=\"toggleSort('card.faction_code')\">\n" +
     "                </sort-control>\n" +
     "            </div>\n" +
@@ -207,7 +208,7 @@ angular.module("js/views/modal.html", []).run(["$templateCache", function($templ
 
 angular.module("js/views/sort.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("js/views/sort.html",
-    "<div class=\"point\">\n" +
+    "<div class=\"point {{cls}}\">\n" +
     "    <i class=\"fa\"\n" +
     "        ng-show=\"sort === column\"\n" +
     "        ng-class=\"{'fa-caret-up': order === '+', 'fa-caret-down': order === '-'}\">\n" +

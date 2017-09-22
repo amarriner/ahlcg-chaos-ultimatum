@@ -48,6 +48,7 @@
                 templateUrl: 'js/views/sort.html',
                 restrict: 'E',
                 scope: {
+                    cls: '@',
                     column: '@',
                     name: '@',
                     sort: '=',

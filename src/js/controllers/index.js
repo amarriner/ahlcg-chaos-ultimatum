@@ -61,27 +61,32 @@
                     Resource.getPacks().then(
                         function(success) {
 
-                        $scope.packs = success.data;
+                            if (success.data) {
+                                $scope.packs = success.data;
 
-                        for (var i in $scope.packs) {
-                            $scope.packs[i].checked = true;
-                        }
+                                for (var i in $scope.packs) {
+                                    $scope.packs[i].checked = true;
+                                }
+                            }
+                            else {
+                                $scope.packs = success;
+                            }
 
-                        $scope.packs.sort(function(a, b) {
-                            var apos = (a.cycle_position * 100) + a.position;
-                            var bpos = (b.cycle_position * 100) + b.position;
+                            $scope.packs.sort(function(a, b) {
+                                var apos = (a.cycle_position * 100) + a.position;
+                                var bpos = (b.cycle_position * 100) + b.position;
                                 
-                            if (apos < bpos) {
-                                return -1;
-                            }
-                            if (apos > bpos) {
-                                return 1;
-                            }
+                                if (apos < bpos) {
+                                    return -1;
+                                }
+                                if (apos > bpos) {
+                                    return 1;
+                                }
 
-                            return 0;
-                        });
+                                return 0;
+                            });
                        
-                        resolve("Loaded Packs");
+                            resolve("Loaded Packs");
 
                         },
                         function(error) {
@@ -171,6 +176,7 @@
                         modal.close.then(
                             function(result) {
                                 $scope.packs = result;
+                                Resource.setPacks($scope.packs);
                             }
                         );
                     }
@@ -440,7 +446,7 @@
                 if (column != $scope.sort) {
                     $scope.order = "+";
                 }
-                
+
                 $scope.sort = column;
             };
 
