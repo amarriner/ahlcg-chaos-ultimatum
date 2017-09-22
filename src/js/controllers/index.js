@@ -93,7 +93,7 @@
             getCards().then(function(success) {
             getPacks().then(function(success) {
 
-                if ($scope.deckstring) {
+                if ($scope.deckstring !== "undefined") {
                     $scope.decodeDeck();
                 }
 
