@@ -8,6 +8,7 @@
             var cards;
             var packs;
             var gators;
+            var maxXp = 0;
 
             return {
 
@@ -47,6 +48,14 @@
 
                 },
 
+                getMaxXp: function() {
+                    return maxXp;
+                },
+
+                setMaxXp: function(xp) {
+                    maxXp = xp;
+                },
+                
                 getPacks: function() {
 
                     if (packs) {

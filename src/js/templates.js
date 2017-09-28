@@ -28,15 +28,20 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "            </div>\n" +
     "        \n" +
     "            <div class=\"form-group\">\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"makeDeck()\"><i class=\"fa fa-cog\"></i><span class=\"hidden-xs\"> Make Deck</span></button>\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"randomGator()\"><i class=\"fa fa-random\"></i><span class=\"hidden-xs\"> Random Investigator</span></button>\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"toggleShowPacks()\"><i class=\"fa fa-check-square-o\"></i><span class=\"hidden-xs\">Show Packs</span></button>\n" +
-    "            <button class=\"btn btn-primary\" ng-click=\"downloadOctgn()\"><i class=\"fa fa-download\"></i><span class=\"hidden-xs\"> Download OCTGN</span></button>\n" +
-    "            <div id=\"include-unreleased\" class=\"checkbox\">\n" +
-    "                <label>\n" +
-    "                    <input type=\"checkbox\" ng-model=\"includeUnreleased\"><span class=\"hidden-xs\"> Include</span> Unreleased\n" +
-    "                </label>\n" +
-    "            </div>\n" +
+    "                <button class=\"btn btn-primary\" ng-click=\"makeDeck()\"><i class=\"fa fa-cog\"></i><span class=\"hidden-xs\"> Make Deck</span></button>\n" +
+    "                <button class=\"btn btn-primary\" ng-click=\"randomGator()\"><i class=\"fa fa-random\"></i><span class=\"hidden-xs\"> Random Investigator</span></button>\n" +
+    "                <button class=\"btn btn-primary\" ng-click=\"toggleShowPacks()\"><i class=\"fa fa-check-square-o\"></i><span class=\"hidden-xs\">Show Packs</span></button>\n" +
+    "                <button class=\"btn btn-primary\" ng-click=\"downloadOctgn()\"><i class=\"fa fa-download\"></i><span class=\"hidden-xs\"> Download OCTGN</span></button>\n" +
+    "                <div class=\"input-group inline hidden-sm hidden-xs\">\n" +
+    "                    <input class=\"form-control\" type=\"text\" id=\"maxXp\" ng-model=\"maxXp\" />\n" +
+    "                    <span class=\"input-group-addon\">xp</span>\n" +
+    "                </div>\n" +
+    "                <input class=\"inline hidden-lg hidden-md visible-sm visible-xs form-control col-xs-2\" type=\"text\" id=\"maxXpSmall\" ng-model=\"maxXp\" />\n" +
+    "                <div id=\"include-unreleased\" class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\" ng-model=\"includeUnreleased\"><span class=\"hidden-xs\"> Include</span> Unreleased\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
@@ -153,14 +158,25 @@ angular.module("js/views/index.html", []).run(["$templateCache", function($templ
     "        </div>\n" +
     "\n" +
     "        <div class=\"row\" ng-class-even=\"'rowHighlight'\" hover-class=\"hoverHighlight\" ng-repeat=\"card in deck | orderBy: order + sort\">\n" +
-    "            <div class=\"hidden-xs col-sm-4 col-md-3\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a></div>\n" +
+    "            <div class=\"hidden-xs col-sm-4 col-md-3\">\n" +
+    "                <a class=\"margin-right\" ng-href=\"{{card.card.url}}\">{{card.card.name}}</a>\n" +
+    "                <span class=\"xp\" ng-repeat=\"i in getTimes(card.card.xp)\">\n" +
+    "                    <i class=\"fa fa-circle\"></i>\n" +
+    "                </span>\n" +
+    "            </div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.count}}</div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\">{{card.card.type_name}}</div>\n" +
     "            <div class=\"hidden-xs col-sm-1 text-center\"><img ng-show=\"card.card.faction_code != 'neutral'\" ng-src=\"{{card.card.faction_code != 'neutral' ? 'images/' + card.card.faction_code + '.png' : ''}}\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "            <div class=\"hidden-xs col-sm-3\">{{card.card.traits}}</div>\n" +
     "            <div class=\"hidden-xs hidden-sm col-md-3\">{{card.card.pack_name}}</div>\n" +
     "\n" +
-    "            <div class=\"col-xs-7 hidden-sm hidden-md hidden-lg\"><a ng-href=\"{{card.card.url}}\">{{card.card.name}}</a> ({{card.count}})</div>\n" +
+    "            <div class=\"col-xs-7 hidden-sm hidden-md hidden-lg\">\n" +
+    "                <a class=\"margin-right\" ng-href=\"{{card.card.url}}\">{{card.card.name}}</a>\n" +
+    "                <span class=\"xp\" ng-repeat=\"i in getTimes(card.card.xp)\">\n" +
+    "                    <i class=\"fa fa-circle\"></i>\n" +
+    "                </span>\n" +
+    "                <span class=\"margin-left\">({{card.count}})</span>\n" +
+    "            </div>\n" +
     "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\">{{card.card.type_name}}</div>\n" +
     "            <div class=\"col-xs-2 hidden-sm hidden-md hidden-lg\"><img ng-show=\"card.card.faction_name != 'Neutral'\" ng-src=\"{{card.card.faction_code != 'neutral' ? 'images/' + card.card.faction_code + '.png' : ''}}\" alt=\"{{card.card.faction_name}}\"></div>\n" +
     "        </div>\n" +

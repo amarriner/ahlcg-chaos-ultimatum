@@ -6745,6 +6745,30 @@ button.close {
 #include-unreleased {
   display: inline;
 }
+#maxXp {
+  max-width: 45px;
+}
+#maxXpSmall {
+  float: none;
+  width: 16.6667%;
+}
+@media (max-width: 767px) {
+  #maxXpSmall {
+    display: inline !important;
+  }
+}
+.xp {
+  color: #bbb;
+  font-size: 50%;
+  position: relative;
+  top: -2px;
+}
+.margin-left {
+  margin-left: 5px;
+}
+.margin-right {
+  margin-right: 5px;
+}
 .point {
   cursor: pointer;
 }
@@ -6761,6 +6785,9 @@ button.close {
 .navbar-brand > img {
   display: inline;
   height: 25px;
+}
+.inline {
+  display: inline;
 }
 .header {
   background-color: #337ab7;

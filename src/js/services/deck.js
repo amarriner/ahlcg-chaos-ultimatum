@@ -7,6 +7,8 @@
 
             var regex;
 
+            var deck = [];
+
             var factions = [
                 "guardian",
                 "seeker",
@@ -19,7 +21,7 @@
             // TODO: An occult card will currently count towards the "Other Seeker/Survivor" limit,
             //       should it?
             //
-            function checkCardForGator(deck, gator, card, pack, includeUnreleased) {
+            function checkCardForGator(deck, gator, card, pack, includeUnreleased, xp) {
 
                 //
                 // If the pack has been unchecked, don't allow cards from it
@@ -58,9 +60,9 @@
                 }
 
                 //
-                // Card has to be zero level
+                // Need to have the correct amount of XP for this card
                 //
-                if (card.xp > 0) {
+                if (card.xp > xp) {
                     return false;
                 }
 
@@ -360,6 +362,20 @@
                 return total;
             }
 
+            function getRandomFactionCard(factionCode, cards) {
+
+                var factionCards = [];
+                
+                for (var i in cards) {
+                    if (cards[i].faction_code === factionCode) {
+                        factionCards.push(cards[i]);
+                    }
+                }
+
+                return factionCards[Math.floor(Math.random() * factionCards.length)];
+
+            }
+
             var getRandomGator = function(gators) {
                 return gators[Math.floor(Math.random() * gators.length)];
             };
@@ -392,24 +408,66 @@
                 );
             };
 
-            var makeDeck = function (gator, cards, packs, includeUnreleased) {
+            var makeDeck = function (gator, cards, packs, includeUnreleased, xp) {
 
-                var deck = [];
+                deck = [];
+
+                //
+                // Get three random factions if this is Lola
+                //
+                var lolaFactions = [];
+                if (gator.code === "03006") {
+
+                    lolaFactions = factions.slice();
+
+                    for (var j = 0; j < 2; j++) {
+                        lolaFactions.splice(Math.floor(Math.random() * lolaFactions.length), 1);
+                    }
+                    
+                }
 
                 var count = 0;
+                var totalXp = 0;
+                var unspentXp = xp;
                 while(deck.length < gator.deck_requirements.size && count < 3000) {
+
+                    var c;
+
+                    //
+                    // If this is Lola, make sure she has her three factions filled
+                    // before just selecting any random card
+                    //
+                    if (lolaFactions.length) {
+                        c = getRandomFactionCard(lolaFactions[0], cards);
+                    }
 
                     //
                     // Pull a random card from the possible card pool
                     //
-                    var c = cards[Math.floor(Math.random() * cards.length)];
+                    else {
+                        c = cards[Math.floor(Math.random() * cards.length)];
+                    }
 
                     //
                     // Check to see if this card is allowed for this gator, and
                     // if it is, put it in the deck
                     //
-                    if (checkCardForGator(deck, gator, c, getPackById(packs, c.pack_code), includeUnreleased)) {
+                    if (checkCardForGator(deck, gator, c, getPackById(packs, c.pack_code), includeUnreleased, unspentXp)) {
                         deck.push(c);
+
+                        //
+                        // If we added this card to a Lola deck, and there are still
+                        // more Lola cards to go, update the counts and remove factions
+                        // that are full
+                        //
+                        if (lolaFactions.length) {
+                            if (countFactionsInDeck(deck, [lolaFactions[0]]) >= 7) {
+                                lolaFactions.shift();
+                            }
+                        }
+
+                        unspentXp -= c.xp;
+                        totalXp += c.xp;
                     }
                     
                     count++;

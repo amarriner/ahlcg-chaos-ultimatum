@@ -22,6 +22,7 @@
             $scope.selectedGator = null;
             $scope.cards = null;
             $scope.gators = null;
+            $scope.maxXp = Resource.getMaxXp();
 
             function getGators() {
                 return $q(function(resolve, reject) {
@@ -111,8 +112,9 @@
             $scope.makeDeck = function() {
                 if ($scope.selectedGator) {
                     $scope.setGator();
-                    $scope.deck = Deck.makeDeck($scope.gator, $scope.cards, $scope.packs, $scope.includeUnreleased);
+                    $scope.deck = Deck.makeDeck($scope.gator, $scope.cards, $scope.packs, $scope.includeUnreleased, $scope.maxXp);
                     $scope.deckstring = $scope.encodeDeck();
+                    Resource.setMaxXp($scope.maxXp);
                     $route.updateParams({deckstring: $window.encodeURIComponent($scope.deckstring)});
                 }
             };
@@ -448,6 +450,31 @@
                 }
 
                 $scope.sort = column;
+            };
+
+            $scope.getTimes = function(number) {
+
+                var a = [];
+                for (var i = 0; i < number; i++) {
+                    a[i] = i;
+                }
+
+                return a;
+
+            };
+
+            $scope.translateFaction = function(faction) {
+
+                var t = {
+                    "guardian": "willpower",
+                    "mystic": "intellect",
+                    "survivor": "strength",
+                    "rogue": "agility",
+                    "seeker": "wild"
+                };
+
+                return t[faction];
+
             };
 
         }
