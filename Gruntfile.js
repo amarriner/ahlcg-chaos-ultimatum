@@ -120,6 +120,9 @@ module.exports = function(grunt) {
                 customtags: [
                     'sort-header'
                 ],
+                relaxerror: [
+                    'Consider adding a “lang” attribute to the “html” start tag to declare the language of this document.'
+                ],
                 reportpath: null,
                 reportCheckstylePath: null,
                 tmplext: 'html'

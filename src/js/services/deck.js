@@ -423,7 +423,7 @@
                     for (var j = 0; j < 2; j++) {
                         lolaFactions.splice(Math.floor(Math.random() * lolaFactions.length), 1);
                     }
-                    
+
                 }
 
                 var count = 0;

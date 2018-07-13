@@ -1,5 +1,4 @@
 node_modules
 src/json/**/*.json
 src/libs
-package-lock.json
 html/*
